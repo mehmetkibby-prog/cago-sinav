@@ -1,0 +1,24 @@
+{
+  "name": "muzik-sinavi",
+  "version": "26.27.0",
+  "private": true,
+  "scripts": {
+    "android:add": "npx cap add android",
+    "android:sync": "npx cap sync android",
+    "android:prepare": "bash scripts/prepare-android.sh",
+    "android:open": "npx cap open android",
+    "build:apk": "cd android && ./gradlew assembleDebug",
+    "test:native": "node tests/android-native-template.test.js",
+    "test:quality": "node tests/real2026-quality.test.js && node tests/real2026-integration.test.js && node tests/real2026-resilience.test.js && node tests/ags-workbook-integrity.test.js && node tests/android-native-template.test.js",
+    "ios:sync": "npx cap sync ios",
+    "ios:open": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.5.0",
+    "@capacitor/core": "8.5.0",
+    "@capacitor/ios": "8.5.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.0"
+  }
+}

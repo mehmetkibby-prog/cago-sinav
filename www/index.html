@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071225">
+  <title>Müzik Sınavı V26.27 · AGS Eğitim Bilimleri Kitabı</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles-extra.css">
+  <link rel="stylesheet" href="ags-workbook.css">
+  <link rel="stylesheet" href="mobile.css">
+</head>
+<body>
+  <header>
+    <button id="back" class="icon hidden" aria-label="Geri">‹</button>
+    <div><h1 id="page-title">Müzik Sınavı</h1><p id="subtitle">V26.27 · AGS Eğitim Bilimleri Kitabı</p></div>
+    <button id="settings" class="icon" aria-label="Ayarlar">⚙</button>
+  </header>
+  <main id="app"></main>
+  <nav id="bottom-nav">
+    <button data-route="home" class="active">⌂<span>Ana Sayfa</span></button>
+    <button data-route="wrong">✕<span>Yanlışlar</span></button>
+    <button data-route="stats">▥<span>Başarı</span></button>
+    <button data-route="voice">◉<span>AI Ses</span></button>
+    <button data-route="more">•••<span>Daha Fazla</span></button>
+  </nav>
+  <div id="toast" role="status"></div>
+  <script src="html2pdf.bundle.min.js"></script>
+  <script src="jspdf.umd.min.js"></script>
+  <script src="real2026-quality.js"></script>
+  <script src="ags-workbook.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

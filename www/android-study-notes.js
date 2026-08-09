@@ -2,7 +2,9 @@
   "use strict";
 
   const STORAGE_KEY = "savedLessonSentencesV1";
-  const SELECTABLE_SELECTOR = ".selectable-study-text, .lesson-output, #topic-lesson-content, .ags-lesson-text";
+  const SELECTABLE_SELECTOR = ".selectable-study-text, .lesson-output, #topic-lesson-content, .ags-lesson-text, .message.ai, .lesson-transcript, .result, .answer-feedback, #app";
+  const EDITABLE_SELECTOR = "input, textarea, select, [contenteditable='true']";
+  const INTERACTIVE_SELECTOR = "button, a, label, input, textarea, select, nav, [contenteditable='true']";
   const MAX_SELECTION_LENGTH = 5000;
   let pendingSelection = null;
   let toolbarPressed = false;
@@ -95,15 +97,29 @@
     toolbar.classList.remove("hidden");
   }
 
-  function clearSelectionToolbar() {
+  function isEditingText() {
+    const active = document.activeElement;
+    return Boolean(active?.matches?.(EDITABLE_SELECTOR));
+  }
+
+  function clearSelectionToolbar(removeSelection = true) {
     pendingSelection = null;
     const toolbar = document.querySelector("#sentence-save-toolbar");
     toolbar?.classList.add("hidden");
-    try { window.getSelection()?.removeAllRanges(); } catch (_) {}
+    // Android WebView treats clearing the range of a focused input as an edit
+    // cancellation and dismisses the software keyboard. Never touch the range
+    // while the user is typing in an input/textarea/select.
+    if (removeSelection && !isEditingText()) {
+      try { window.getSelection()?.removeAllRanges(); } catch (_) {}
+    }
   }
 
   function captureSelection() {
     if (toolbarPressed) return;
+    if (isEditingText()) {
+      clearSelectionToolbar(false);
+      return;
+    }
     const selection = window.getSelection?.();
     if (!selection || selection.isCollapsed || !selection.rangeCount) {
       clearSelectionToolbar();
@@ -115,6 +131,10 @@
     const focusElement = selection.focusNode?.nodeType === Node.ELEMENT_NODE
       ? selection.focusNode
       : selection.focusNode?.parentElement;
+    if (anchorElement?.closest?.(INTERACTIVE_SELECTOR) || focusElement?.closest?.(INTERACTIVE_SELECTOR)) {
+      clearSelectionToolbar(false);
+      return;
+    }
     const container = anchorElement?.closest?.(SELECTABLE_SELECTOR);
     if (!container || !focusElement || !container.contains(focusElement)) {
       clearSelectionToolbar();
@@ -204,12 +224,15 @@
     }));
   }
 
-  document.addEventListener("selectionchange", () => scheduleSelectionCapture(120));
+  document.addEventListener("selectionchange", () => {
+    if (isEditingText()) return clearSelectionToolbar(false);
+    scheduleSelectionCapture(120);
+  });
   document.addEventListener("pointerup", event => {
-    if (!event.target.closest?.("#sentence-save-toolbar")) scheduleSelectionCapture(60);
+    if (!event.target.closest?.("#sentence-save-toolbar") && !event.target.closest?.(EDITABLE_SELECTOR)) scheduleSelectionCapture(60);
   });
   document.addEventListener("touchend", event => {
-    if (!event.target.closest?.("#sentence-save-toolbar")) scheduleSelectionCapture(180);
+    if (!event.target.closest?.("#sentence-save-toolbar") && !event.target.closest?.(EDITABLE_SELECTOR)) scheduleSelectionCapture(180);
   }, { passive: true });
 
   ensureToolbar();

@@ -12,7 +12,7 @@ const mustContain = (relative, fragments) => {
 };
 
 const index = mustContain("www/index.html", [
-  "V26.28 · Android Tablet",
+  "V26.29 · Android Tablet",
   "android-tablet-notes.css",
   "android-study-notes.js",
 ]);
@@ -37,7 +37,7 @@ const app = mustContain("www/app.js", [
   '"saved-sentences":renderSavedSentences',
   "selectable-study-text",
   "sentence-save-hint",
-  "V26.28 · Android Tablet",
+  "V26.29 · Android Tablet",
 ]);
 new vm.Script(app, { filename: "app.js" });
 
@@ -51,7 +51,7 @@ new vm.Script(workbook, { filename: "ags-workbook.js" });
 
 mustContain("www/android-tablet-notes.css", [
   ".ags-lesson-reader>header{display:block!important}",
-  ".ags-workbook-toolbar{top:82px}",
+  ".ags-workbook-toolbar{position:relative!important;top:auto!important}",
   "@media(min-width:601px) and (max-width:900px)",
   ".ags-resource-grid,.ags-test-grid{grid-template-columns:1fr}",
   ".sentence-save-toolbar",

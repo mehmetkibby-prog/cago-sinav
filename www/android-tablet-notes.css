@@ -9,6 +9,76 @@
   overflow-wrap:anywhere;
   word-break:normal;
 }
+
+/* V26.29: Android WebView tablet layout is deliberately single-column at the
+   structural level. Every child may shrink and every long label may wrap. */
+.ags-workbook-page,
+.ags-workbook-page *,
+#ags-workbook-body,
+#ags-workbook-body *{box-sizing:border-box}
+.ags-workbook-page,
+#ags-workbook-body,
+.ags-section-stack,
+.ags-subject-card,
+.ags-test-player,
+.ags-lesson-reader,
+.ags-page-viewer,
+.ags-search-results{min-width:0;max-width:100%}
+.ags-workbook-page{width:100%;overflow-x:hidden}
+.ags-workbook-hero,
+.ags-workbook-toolbar,
+.ags-subject-card,
+.ags-test-library-head,
+.ags-test-card,
+.ags-question-card,
+.ags-lesson-text,
+.ags-page-viewer>header,
+.ags-search-results>header{width:100%;min-width:0;overflow:hidden}
+.ags-workbook-hero h2,
+.ags-workbook-hero p,
+.ags-workbook-metrics b,
+.ags-workbook-metrics span,
+.ags-workbook-tabs button,
+.ags-subject-chips button,
+.ags-inline-back button,
+.ags-reader-switch button,
+.ags-test-library-actions button,
+.ags-test-nav button{white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+.ags-workbook-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.ags-workbook-metrics article{min-width:0}
+.ags-progress-metric{grid-column:auto!important}
+.ags-workbook-toolbar{position:relative!important;top:auto!important}
+.ags-workbook-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ags-search{min-width:0;width:100%}
+.ags-search input{min-width:0;width:100%}
+.ags-subject-card>header{grid-template-columns:88px minmax(0,1fr)!important}
+.ags-subject-card>header img{width:88px;max-width:100%;height:auto}
+.ags-resource-grid,.ags-test-grid{grid-template-columns:1fr!important}
+.ags-resource-card{grid-template-columns:40px minmax(0,1fr)!important;width:100%;min-width:0;height:auto}
+.ags-test-library-head,
+.ags-test-player-head,
+.ags-page-viewer>header,
+.ags-search-results>header{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important}
+.ags-test-library-actions{display:grid!important;grid-template-columns:1fr!important;width:100%;min-width:0}
+.ags-inline-back,.ags-reader-switch,.ags-test-nav{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0}
+.ags-question-map{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+.ags-choice-list button{grid-template-columns:38px minmax(0,1fr)!important;width:100%;min-width:0}
+.ags-choice-list span{min-width:0;white-space:normal}
+.ags-page-controls{grid-template-columns:46px minmax(0,1fr) 46px!important}
+.ags-page-controls select{min-width:0;width:100%}
+.ags-page-strip{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+.ags-page-frame{width:100%;max-width:100%;min-width:0}
+.ags-page-frame:not(.zoomed) img{width:100%;max-width:940px}
+
+/* All generated teaching text can be selected, not only the AGS reader. */
+#app .message.ai,
+#app .lesson-transcript,
+#app .result,
+#app .answer-feedback{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  overflow-wrap:anywhere;
+}
 .selectable-study-text::selection,
 .lesson-output::selection,
 #topic-lesson-content::selection,
@@ -96,6 +166,10 @@
   .ags-page-strip{grid-template-columns:repeat(8,minmax(0,1fr))}
 }
 
+@media(min-width:901px){
+  .ags-workbook-page{max-width:1100px;margin-inline:auto}
+}
+
 @media(max-width:600px){
   .ags-workbook-toolbar{top:calc(68px + env(safe-area-inset-top))}
   .sentence-save-toolbar{
@@ -110,6 +184,11 @@
   .sentence-save-toolbar button{width:100%;padding:10px 12px}
   .saved-sentence-card{padding:15px}
   .saved-sentence-card>div{display:grid;grid-template-columns:1fr 1fr}
+  .ags-workbook-tabs{grid-template-columns:1fr}
+  .ags-workbook-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .ags-subject-card>header{grid-template-columns:70px minmax(0,1fr)!important}
+  .ags-subject-card>header img{width:70px}
+  .ags-question-map,.ags-page-strip{grid-template-columns:repeat(6,minmax(0,1fr))!important}
 }
 
 @media(max-height:620px) and (orientation:landscape){

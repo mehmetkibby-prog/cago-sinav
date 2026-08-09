@@ -91,7 +91,7 @@ function toggleHardQuestion(q,on){
   store.set("hardQuestionItems",items.slice(0,1000));store.set("hardQuestions",[...idSet]);
   toast(on?"Soru Zor Sorular bölümüne kaydedildi":"Soru Zor Sorular bölümünden çıkarıldı");
 }
-function setTitle(t,s="V26.28 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V26.29 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(typeof clearSelectionToolbar==="function")clearSelectionToolbar();if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -1153,7 +1153,7 @@ async function buildTextPdf(title,text){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(210,218,226);pdf.line(left,pageHeight-12,left+usableWidth,pageHeight-12);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(8);pdf.setTextColor(95,105,117);
-    pdf.text("Müzik Sınavı V26.28 · Kişisel çalışma çıktısı",left,pageHeight-8);
+    pdf.text("Müzik Sınavı V26.29 · Kişisel çalışma çıktısı",left,pageHeight-8);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-8,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");
@@ -1223,7 +1223,7 @@ async function buildPrintableExamPdf(title,questions){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(205,214,224);pdf.line(left,pageHeight-11,left+width,pageHeight-11);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(7.5);pdf.setTextColor(91,102,116);
-    pdf.text("Müzik Sınavı V26.28 · tekrarsız 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
+    pdf.text("Müzik Sınavı V26.29 · tekrarsız 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-7,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");

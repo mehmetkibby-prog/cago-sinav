@@ -211,7 +211,7 @@
   function referenceExclusions(){return REFERENCE_EXCLUSIONS.map(item=>makeRecord(item,item))}
 
   return Object.freeze({
-    VERSION:"26.27",LETTERS,normalize,compact,tokens,jaccard,dice,inferAnchor,makeRecord,duplicateReason,auditNovelty,
+    VERSION:"26.28",LETTERS,normalize,compact,tokens,jaccard,dice,inferAnchor,makeRecord,duplicateReason,auditNovelty,
     validateSources,isTrustedHost,balanceAnswers,selectLeastUsedFocuses,referenceExclusions
   });
 });

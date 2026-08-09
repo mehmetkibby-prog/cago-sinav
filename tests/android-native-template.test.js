@@ -21,8 +21,8 @@ function mustContain(relativePath, fragments) {
 }
 
 mustContain('native-android/app/build.gradle', [
-  'versionCode 2627',
-  'versionName "26.27"',
+  'versionCode 2628',
+  'versionName "26.28"',
   'applicationId "com.caglar.muziksinavi"'
 ]);
 
@@ -60,7 +60,9 @@ mustContain('scripts/prepare-android.sh', [
   'npx cap add android',
   'npx cap sync android',
   'copy_native_file "app/src/main/java/com/caglar/muziksinavi/PdfSaverPlugin.java"',
-  'copy_native_file "app/src/main/java/com/caglar/muziksinavi/NativeTtsPlugin.java"'
+  'copy_native_file "app/src/main/java/com/caglar/muziksinavi/NativeTtsPlugin.java"',
+  'android-study-notes.js',
+  'android-tablet-notes.css'
 ]);
 
-console.log('Android tam depo şablonu: PDF, TTS, mikrofon izinleri ve V26.27 sürümü doğrulandı.');
+console.log('Android tam depo şablonu: PDF, TTS, mikrofon izinleri ve V26.28 sürümü doğrulandı.');

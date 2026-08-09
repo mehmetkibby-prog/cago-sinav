@@ -1,4 +1,4 @@
-# Müzik Sınavı Android V26.27 — Yeni GitHub Deposu Tam Kaynak
+# Müzik Sınavı Android V26.28 — Tablet Düzeltmeli Tam Kaynak
 
 Bu paket yeni ve boş bir GitHub deposuna doğrudan yüklenmek için hazırlanmıştır.
 Uygulamanın web kaynakları, soru bankaları, AGS kitabı, otomatik APK iş akışı
@@ -17,7 +17,16 @@ ve Android'e özel PDF/TTS kodları birlikte bulunur.
 - `package.json`, `package-lock.json`, `capacitor.config.json`: bağımlılık ve
   proje yapılandırması
 
-## V26.27 — AGS Eğitim Bilimleri Kitabı
+## V26.28 — Android tablet düzeltmeleri
+
+- AGS konu anlatımı başlığında tablet genişliğinde birbirine giren yazılar düzeltildi
+- AGS araç çubuğunun üst uygulama başlığıyla çakışması önlendi
+- Tablet portre görünümünde AGS kartları tek sütunda ve taşmadan açılır
+- AGS ve AI konu anlatımlarında metne basılı tutup seçerek cümle kaydetme geri eklendi
+- Kayıtları saklayan ayrı **Kaydettiğim Cümleler** bölümü eklendi
+- Cümle kopyalama, tek kayıt silme ve tüm kayıtları temizleme eklendi
+
+## Korunan AGS Eğitim Bilimleri Kitabı
 
 - 40 orijinal sayfa
 - 12 konu anlatımı
@@ -32,7 +41,7 @@ ve Android'e özel PDF/TTS kodları birlikte bulunur.
 - Türkçe cihaz sesini kullanan yerel TTS kodu
 - Mikrofon izni ve ses ayarları
 - `com.caglar.muziksinavi` paket kimliği
-- V26.27 sürüm kodu
+- V26.28 sürüm kodu
 - Samsung tablet görünümü ve mevcut soru bankaları
 
 ## GitHub ile APK oluşturma
@@ -42,7 +51,7 @@ Ayrıntılar için `GITHUB-YUKLEME-ADIMLARI.md` dosyasını okuyun. Kısaca:
 1. Bu klasörün içindeki her şeyi yeni deponun ana dizinine yükleyin.
 2. `.github` klasörünün yüklendiğini doğrulayın.
 3. **Actions → APK oluştur → Run workflow** seçeneğini çalıştırın.
-4. `Muzik-Sinavi-Android-V26.27-Tam-Debug-APK` çıktısını indirin.
+4. `Muzik-Sinavi-Android-V26.28-Tablet-Duzeltmeli-APK` çıktısını indirin.
 
 ## Yerel derleme
 

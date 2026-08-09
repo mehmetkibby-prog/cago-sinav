@@ -260,14 +260,14 @@ window.EBWorkbook = (() => {
     const done = Boolean(readProgress().lessons?.[resource.id]);
     return `<section class="ags-lesson-reader">
       <div class="ags-inline-back"><button class="secondary" data-ags-back-study>← Bölüm Listesi</button><button class="${done ? "secondary" : "primary"}" data-ags-complete-lesson="${resource.id}">${done ? "✓ Tamamlandı" : "Okudum, Tamamla"}</button></div>
-      <header><small>${esc(subject.shortTitle || subject.title)} · PDF s. ${resource.physicalPage}</small><h3>${esc(resource.title)}</h3><p>Telefon için akıcı metin görünümü ile PDF’nin birebir sayfası arasında geçiş yapabilirsin.</p></header>
+      <header><div><small>${esc(subject.shortTitle || subject.title)} · PDF s. ${resource.physicalPage}</small><h3>${esc(resource.title)}</h3><p>Tablet için akıcı metin görünümü ile PDF’nin birebir sayfası arasında geçiş yapabilirsin.</p></div></header>
       <div class="ags-reader-switch"><button data-ags-reader-mode="text" class="${ui.readerMode === "text" ? "active" : ""}">Okuma Metni</button><button data-ags-reader-mode="page" class="${ui.readerMode === "page" ? "active" : ""}">Orijinal Sayfa</button></div>
-      ${ui.readerMode === "page" ? pageImageHtml(resource.image, `${resource.title} orijinal PDF sayfası`, true) : lessonTextHtml(resource.text)}
+      ${ui.readerMode === "page" ? pageImageHtml(resource.image, `${resource.title} orijinal PDF sayfası`, true) : `${lessonTextHtml(resource.text, `AGS Eğitim Bilimleri · ${subject.shortTitle || subject.title} · ${resource.title}`)}<p class="sentence-save-hint">📌 Kaydetmek istediğin cümleye basılı tutup seç; altta açılan “Cümleyi Kaydet” düğmesine dokun.</p>`}
     </section>`;
   }
 
-  function lessonTextHtml(text) {
-    return `<article class="ags-lesson-text">${String(text || "").split(/\n\n+/).filter(Boolean).map(paragraph => {
+  function lessonTextHtml(text, source) {
+    return `<article class="ags-lesson-text selectable-study-text" data-save-source="${esc(source)}">${String(text || "").split(/\n\n+/).filter(Boolean).map(paragraph => {
       const letters = paragraph.replace(/[^A-Za-zÇĞİÖŞÜçğıöşü]/g, "");
       const uppercase = letters && letters === letters.toLocaleUpperCase("tr-TR");
       if (uppercase && paragraph.length < 120) return `<h3>${esc(paragraph)}</h3>`;

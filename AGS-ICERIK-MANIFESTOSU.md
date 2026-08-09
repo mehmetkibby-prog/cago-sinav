@@ -1,4 +1,4 @@
-# AGS Eğitim Bilimleri İçerik Manifestosu — V26.27
+# AGS Eğitim Bilimleri İçerik Manifestosu — V26.28
 
 Bu sürümde `MEB-AGS Eğitim Bilimleri Çalışma Yaprakları - Tüm Dersler` PDF'si uygulamaya **tek bir merkez sayfası** olarak aktarılmıştır.
 

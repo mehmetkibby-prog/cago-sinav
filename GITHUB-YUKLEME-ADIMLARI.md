@@ -1,7 +1,7 @@
 # Yeni ve Boş GitHub Deposuna Yükleme
 
 Bu paket, daha önce hiçbir dosya bulunmayan yeni bir GitHub deposuna yüklenmek
-üzere hazırlanmış tam V26.27 Android kaynak paketidir.
+üzere hazırlanmış tam V26.28 Android kaynak paketidir.
 
 ## Yükleme
 
@@ -13,7 +13,7 @@ Bu paket, daha önce hiçbir dosya bulunmayan yeni bir GitHub deposuna yüklenme
 4. macOS'ta `.github` görünmüyorsa Finder'da `Command + Shift + .` tuşlarına
    basın.
 5. GitHub'da **Actions → APK oluştur → Run workflow** yolunu izleyin.
-6. İşlem tamamlanınca **Muzik-Sinavi-Android-V26.27-Tam-Debug-APK** çıktısını
+6. İşlem tamamlanınca **Muzik-Sinavi-Android-V26.28-Tablet-Duzeltmeli-APK** çıktısını
    indirin ve içindeki `app-debug.apk` dosyasını tablete kurun.
 
 ## Neden depoda `android` klasörü yok?

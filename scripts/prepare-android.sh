@@ -36,5 +36,9 @@ test "$page_count" = "40"
 test -s android/app/src/main/assets/public/ags-workbook.json
 test -s android/app/src/main/assets/public/education-questions.json
 test -s android/app/src/main/assets/public/questions.json
+test -s android/app/src/main/assets/public/android-study-notes.js
+test -s android/app/src/main/assets/public/android-tablet-notes.css
+grep -q 'Kaydettiğim Cümleler' android/app/src/main/assets/public/android-study-notes.js
+grep -q '.ags-lesson-reader>header{display:block!important}' android/app/src/main/assets/public/android-tablet-notes.css
 
-echo "Tam Android proje kabuğu, özel PDF/TTS kodları ve 40 AGS sayfası hazır."
+echo "Tam Android proje kabuğu, PDF/TTS kodları, 40 AGS sayfası ve tablet not sistemi hazır."

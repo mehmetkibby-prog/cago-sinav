@@ -1,0 +1,117 @@
+/* V26.28 Android/tablet-only layer: safe AGS typography and sentence saving. */
+.selectable-study-text,
+.lesson-output,
+#topic-lesson-content,
+.ags-lesson-text{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  cursor:text;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.selectable-study-text::selection,
+.lesson-output::selection,
+#topic-lesson-content::selection,
+.ags-lesson-text::selection{
+  color:#03131f;
+  background:#67e8f9;
+}
+.sentence-save-hint{
+  margin:10px 0 0!important;
+  padding:10px 12px;
+  border:1px dashed #3b718f;
+  border-radius:11px;
+  color:#b7cfdf!important;
+  background:#071a2a;
+  font-size:12px!important;
+  line-height:1.5!important;
+}
+.sentence-save-toolbar{
+  position:fixed;
+  z-index:60;
+  left:50%;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:10px;
+  width:min(760px,calc(100% - 28px));
+  padding:12px;
+  border:1px solid #22d3ee;
+  border-radius:18px;
+  background:#071725f5;
+  box-shadow:0 18px 55px #000c,0 0 0 3px #22d3ee22;
+  backdrop-filter:blur(18px);
+  transform:translateX(-50%);
+}
+.sentence-save-toolbar-copy{min-width:0}
+.sentence-save-toolbar-copy small{display:block;margin-bottom:4px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:1px}
+.sentence-save-toolbar-copy span{display:block;overflow:hidden;color:#dff7ff;font-size:12px;line-height:1.35;white-space:nowrap;text-overflow:ellipsis}
+.sentence-save-toolbar button{min-height:44px;margin:0;white-space:nowrap}
+.saved-sentences-feature{border-color:#22d3ee!important;background:linear-gradient(145deg,#124353,#17304a)!important}
+.saved-sentences-hero{border:1px solid #22d3ee;background:linear-gradient(135deg,#10475a,#18304d)}
+.saved-sentence-list{display:grid;gap:13px;margin-top:16px}
+.saved-sentence-card{padding:18px;border:1px solid #315b78;border-radius:18px;background:linear-gradient(145deg,#10263b,#0c1d31);box-shadow:0 8px 24px #0004}
+.saved-sentence-card small{display:block;color:#7dd3fc;font-size:11px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.saved-sentence-card blockquote{margin:12px 0 15px;padding:0 0 0 14px;border-left:4px solid #22d3ee;color:#eefaff;font-size:16px;line-height:1.68;white-space:pre-wrap;overflow-wrap:anywhere}
+.saved-sentence-card>div{display:flex;align-items:center;gap:10px}
+.saved-sentence-card>div button{min-height:42px}
+.saved-sentences-empty{margin-top:16px}
+
+/* The old header was flexing its small label, title and description into one row
+   at Samsung tablet widths. Keep them in a normal text flow on Android. */
+.ags-lesson-reader>header{display:block!important}
+.ags-lesson-reader>header>*{min-width:0;max-width:100%}
+.ags-lesson-reader>header h3,
+.ags-lesson-reader>header p,
+.ags-subject-card h3,
+.ags-subject-card p,
+.ags-resource-card b,
+.ags-resource-card em,
+.ags-test-card h3,
+.ags-test-card p,
+.ags-question-card h3,
+.ags-choice-list span{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.ags-lesson-reader>header h3{font-size:clamp(19px,2.7vw,25px);line-height:1.35}
+.ags-lesson-reader>header p{line-height:1.62}
+.ags-lesson-text{font-size:16px}
+.ags-lesson-text h3{line-height:1.45}
+.ags-lesson-text p{line-height:1.82}
+.ags-lesson-text aside{line-height:1.72}
+.ags-resource-card>span:nth-child(2),.ags-subject-card>header>div{min-width:0}
+
+/* The AGS toolbar now parks below the app header instead of underneath it. */
+.ags-workbook-toolbar{top:82px}
+
+@media(min-width:601px) and (max-width:900px){
+  .ags-workbook-page{gap:15px}
+  .ags-workbook-hero{padding:21px}
+  .ags-resource-grid,.ags-test-grid{grid-template-columns:1fr}
+  .ags-resource-card{min-height:0;padding:16px}
+  .ags-test-player-head,.ags-page-viewer>header,.ags-search-results>header{align-items:stretch;flex-direction:column}
+  .ags-question-map{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .ags-page-strip{grid-template-columns:repeat(8,minmax(0,1fr))}
+}
+
+@media(max-width:600px){
+  .ags-workbook-toolbar{top:calc(68px + env(safe-area-inset-top))}
+  .sentence-save-toolbar{
+    bottom:calc(76px + env(safe-area-inset-bottom));
+    grid-template-columns:1fr auto;
+    gap:8px;
+    width:calc(100% - 20px);
+    padding:10px;
+    border-radius:15px;
+  }
+  .sentence-save-toolbar-copy{grid-column:1/-1}
+  .sentence-save-toolbar button{width:100%;padding:10px 12px}
+  .saved-sentence-card{padding:15px}
+  .saved-sentence-card>div{display:grid;grid-template-columns:1fr 1fr}
+}
+
+@media(max-height:620px) and (orientation:landscape){
+  .sentence-save-toolbar{bottom:66px}
+}

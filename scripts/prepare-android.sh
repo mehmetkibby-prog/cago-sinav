@@ -33,7 +33,16 @@ copy_native_file "app/src/main/res/xml/file_paths.xml"
 
 page_count="$(find android/app/src/main/assets/public/ags-workbook-pages -maxdepth 1 -type f -name 'page-*.webp' | wc -l | tr -d ' ')"
 test "$page_count" = "40"
+summary_page_count="$(find android/app/src/main/assets/public/education-library/summaries -type f -name 'page-*.webp' | wc -l | tr -d ' ')"
+test "$summary_page_count" = "8"
+kpss_page_count="$(find android/app/src/main/assets/public/education-library/kpss-pages -maxdepth 1 -type f -name 'page-*.webp' | wc -l | tr -d ' ')"
+test "$kpss_page_count" = "208"
 test -s android/app/src/main/assets/public/ags-workbook.json
+test -s android/app/src/main/assets/public/education-library/education-library.json
+test -s android/app/src/main/assets/public/education-library.js
+test -s android/app/src/main/assets/public/education-library.css
+test -s android/app/src/main/assets/public/menu-v2632.js
+test -s android/app/src/main/assets/public/menu-v2632.css
 test -s android/app/src/main/assets/public/education-questions.json
 test -s android/app/src/main/assets/public/questions.json
 test -s android/app/src/main/assets/public/android-study-notes.js
@@ -41,4 +50,4 @@ test -s android/app/src/main/assets/public/android-tablet-notes.css
 grep -q 'Kaydettiğim Cümleler' android/app/src/main/assets/public/android-study-notes.js
 grep -q '.ags-lesson-reader>header{display:block!important}' android/app/src/main/assets/public/android-tablet-notes.css
 
-echo "Tam Android proje kabuğu, PDF/TTS kodları, 40 AGS sayfası ve tablet not sistemi hazır."
+echo "Tam Android proje kabuğu, sabit imza, 40 AGS sayfası, 6 özet ve 208 sayfalık KPSS okuyucu hazır."

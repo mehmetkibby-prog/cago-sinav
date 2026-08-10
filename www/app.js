@@ -91,50 +91,11 @@ function toggleHardQuestion(q,on){
   store.set("hardQuestionItems",items.slice(0,1000));store.set("hardQuestions",[...idSet]);
   toast(on?"Soru Zor Sorular bölümüne kaydedildi":"Soru Zor Sorular bölümünden çıkarıldı");
 }
-function setTitle(t,s="V26.31 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V26.32 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(typeof clearSelectionToolbar==="function")clearSelectionToolbar();if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
-  const p=store.get("profile",{name:"Çağlar",examDate:""});
-  const savedSentenceCount=typeof savedLessonSentences==="function"?savedLessonSentences().length:0;
-  setTitle("Müzik Sınavı",p.name?`Hoş geldin, ${p.name}`:"V24 Android");
-  app.innerHTML=`<section class="hero"><h2>Sınava hazırlan</h2><p>${allQuestions().length} soruluk bankadan çalış, yanlışlarını tekrar çöz ve gelişimini izle.</p>
-  <div class="actions"><button class="primary" id="real-music-2026">2026 Gerçek Müzik Sınavı Tarzı</button><button class="secondary" id="mixed">Karışık Deneme</button><button class="secondary khk-2025-button" id="khk-music-2025">2025 Müzik Alanı Tarzı Deneme</button><button class="secondary custom-exam-button" id="custom-exam">Özel Deneme Oluştur</button><button class="secondary" id="real-exam">Gerçek Sınav Simülasyonu</button><button class="secondary music-ai-button" id="music-ai">AI Müzik Soru Oluştur</button><button class="secondary ags-workbook-button" id="ags-workbook">AGS Eğitim Bilimleri Kitabı</button><button class="secondary offline-education-button" id="offline-education">Eğitim Bilimleri</button><button class="secondary education-button" id="education-center">AI Eğitim Bilimleri Merkezi</button><button class="secondary" id="ai-exam">AI Eğitim Bilimleri</button><button class="secondary opera-ballet-button" id="opera-ballet">AI Opera ve Bale</button><button class="secondary ai-center-button" id="ai-center">AI Destekli Çalışma Merkezi</button></div></section>
-  <div class="feature-grid">
-    <button class="card feature" data-go="teacher"><b>🤖 AI Öğretmen</b><span>Sor, öğren, mini sınav yap</span></button>
-    <button class="card feature" data-go="cards"><b>🗂 Ezber Kartları</b><span>Kart çevirerek tekrar et</span></button>
-    <button class="card feature memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b><span>Eser–besteci, dönem ve ağır bilgi soruları</span></button>
-    <button class="card feature ags-workbook-feature" data-go="ags-workbook"><b>📗 AGS Eğitim Bilimleri Kitabı</b><span>40 sayfa · 12 konu · 81 soru ve resmî çözüm</span></button>
-    <button class="card feature saved-sentences-feature" data-go="saved-sentences"><b>📌 Kaydettiğim Cümleler</b><span>${savedSentenceCount} kayıt · konu anlatımından seçtiklerin</span></button>
-    <button class="card feature offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b><span>${offlineEducationQuestions().length} çevrimdışı soru · AI gerektirmez</span></button>
-    <button class="card feature education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri</b><span>MEB, YÖK, üniversite ve akademik kaynak doğrulamalı</span></button>
-    <button class="card feature music-ai-feature" data-go="music-ai"><b>🎼 AI Müzik Soru Oluşturucu</b><span>Tüm dönemler, Türk müziği, çalgılar, teori ve formlar</span></button>
-    <button class="card feature khk-2025-feature" data-go="khk-music-2025"><b>🎯 2025 Müzik Alanı Tarzı Deneme</b><span>70 soruluk KHK profilinde, beş seçenekli özgün alan sınavı</span></button>
-    <button class="card feature khk-2025-feature" data-go="real-music-2026"><b>🏆 2026 Gerçek Müzik Sınavı Tarzı</b><span>Sınavdan hatırladığın soru türlerine göre AI yeni sorular üretir</span></button>
-    <button class="card feature music-report-feature" data-go="music-wrong-ai"><b>🧬 AI Müzik Yanlışları</b><span>Yanlışlarından kişisel özet ve yazdırılabilir PDF hazırla</span></button>
-    <button class="card feature workbook-feature" data-go="workbook"><b>📕 Kişisel Çalışma Kitabı</b><span>Yanlışlarından konu özeti, etkinlik ve yazdırılabilir kitapçık</span></button>
-    <button class="card feature voice-lesson-feature" data-go="wrong-voice-lesson"><b>🎧 Yanlışlardan Sesli Ders</b><span>Not alma durakları ve ayarlanabilir konuşma hızı</span></button>
-    <button class="card feature forgetting-feature" data-go="forgetting-risk"><b>⏳ Bugün Hatırlaman Gerekenler</b><span>Unutma riski yükselen bilgileri zamanında tekrar et</span></button>
-    <button class="card feature saved-tests-feature" data-go="saved-tests"><b>💾 Kayıtlı Testler</b><span>Kaydettiğin testlere kaldığın yerden devam et</span></button>
-    <button class="card feature custom-exam-feature" data-go="custom-exam"><b>🧩 Deneme Oluşturucu</b><span>Bölümleri ve soru sayılarını kendin birleştir</span></button>
-    <button class="card feature" data-go="study"><b>📚 Konu Çalışma Köşesi</b><span>Plan ve notlarını tut</span></button>
-    <button class="card feature" data-go="profile"><b>👤 Kişisel Bilgi Köşesi</b><span>Hedeflerini düzenle</span></button>
-  </div>
-  <h3 class="section-title">Soru Bankası</h3><div class="grid">${state.data.sections.map(s=>`<button class="card section" data-id="${s.id}"><b>${esc(s.title)}</b><span class="pill">${s.questions.length} soru</span></button>`).join("")}</div>`;
-  $(".feature-grid").onclick=e=>{const b=e.target.closest("[data-go]");if(b)({teacher:renderTeacher,cards:renderFlashcards,memory:renderMemoryCenter,"ags-workbook":()=>EBWorkbook.render(),"saved-sentences":renderSavedSentences,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-ai":renderMusicQuestionGenerator,"khk-music-2025":renderKhkMusic2025Generator,"real-music-2026":renderRealMusic2026Generator,"music-wrong-ai":renderMusicWrongAnalysis,workbook:renderPersonalWorkbook,"wrong-voice-lesson":renderWrongVoiceLesson,"forgetting-risk":renderForgettingRisk,"saved-tests":renderSavedTests,"custom-exam":renderCustomExamBuilder,study:renderStudy,profile:renderProfile}[b.dataset.go])()};
-  document.querySelectorAll(".section").forEach(b=>b.onclick=()=>renderSection(b.dataset.id));
-  $("#mixed").onclick=()=>startExam(shuffle(allQuestions()).slice(0,Math.min(50,allQuestions().length)),"Karışık Deneme");
-  $("#custom-exam").onclick=renderCustomExamBuilder;
-  $("#real-exam").onclick=renderSimulationSetup;
-  $("#music-ai").onclick=renderMusicQuestionGenerator;
-  $("#khk-music-2025").onclick=renderKhkMusic2025Generator;
-  $("#real-music-2026").onclick=renderRealMusic2026Generator;
-  $("#ags-workbook").onclick=()=>EBWorkbook.render();
-  $("#offline-education").onclick=renderOfflineEducation;
-  $("#education-center").onclick=renderEducationCenter;
-  $("#ai-exam").onclick=renderAiExam;
-  $("#opera-ballet").onclick=renderOperaBallet;
-  $("#ai-center").onclick=renderAiStudyCenter;
+  renderV2632Home();
 }
 function renderSection(id){
   const s=state.data.sections.find(x=>x.id===id);state.section=s;setTitle(s.title,`${s.questions.length} soru`,true);
@@ -493,26 +454,7 @@ function renderStats(){
   app.innerHTML=h.length?`<div class="list">${h.map(x=>`<article class="list-item"><h3>${esc(x.title)} · %${x.score}</h3><p class="muted">${new Date(x.date).toLocaleString("tr-TR")} · ${x.correct} doğru / ${x.wrong} yanlış</p><div class="bar"><span style="width:${x.score}%"></span></div></article>`).join("")}</div>`:`<section class="hero"><h2>Henüz sonuç yok</h2><p>Bir deneme tamamladığında sonuçların burada görünecek.</p></section>`;
 }
 function renderMore(){
-  setTitle("Çalışma Alanları","Tüm araçlar");app.innerHTML=`<div class="grid">
-  <button class="card" data-go="hard"><b>★ Zor Sorular</b></button><button class="card" data-go="cards"><b>🗂 Ezber Kartları</b></button>
-  <button class="card memory-feature" data-go="memory"><b>🧠 Yoğun Ezber Soruları</b></button>
-  <button class="card simulation-feature" data-go="simulation"><b>⏱ Gerçek Sınav Simülasyonu</b></button>
-  <button class="card opera-ballet-feature" data-go="opera-ballet"><b>🎭 AI Opera ve Bale</b></button>
-  <button class="card music-ai-feature" data-go="music-ai"><b>🎼 AI Müzik Soru Oluşturucu</b></button>
-  <button class="card khk-2025-feature" data-go="real-music-2026"><b>🏆 2026 Gerçek Müzik Sınavı Tarzı</b></button>
-  <button class="card ags-workbook-feature" data-go="ags-workbook"><b>📗 AGS Eğitim Bilimleri Kitabı</b></button>
-  <button class="card saved-sentences-feature" data-go="saved-sentences"><b>📌 Kaydettiğim Cümleler</b></button>
-  <button class="card offline-education-feature" data-go="offline-education"><b>📘 Eğitim Bilimleri</b></button>
-  <button class="card education-feature" data-go="education"><b>🎓 AI Eğitim Bilimleri Merkezi</b></button>
-  <button class="card music-report-feature" data-go="music-wrong-ai"><b>🧬 AI Müzik Yanlışları</b></button>
-  <button class="card workbook-feature" data-go="workbook"><b>📕 Kişisel Çalışma Kitabı</b></button>
-  <button class="card voice-lesson-feature" data-go="wrong-voice-lesson"><b>🎧 Yanlışlardan Sesli Ders</b></button>
-  <button class="card forgetting-feature" data-go="forgetting-risk"><b>⏳ Unutma Riski Sistemi</b></button>
-  <button class="card saved-tests-feature" data-go="saved-tests"><b>💾 Kayıtlı Testler</b></button>
-  <button class="card custom-exam-feature" data-go="custom-exam"><b>🧩 Özel Deneme Oluştur</b></button>
-  <button class="card" data-go="ai-center"><b>✨ AI Çalışma Merkezi</b></button><button class="card" data-go="study"><b>📚 Konu Çalışma</b></button>
-  <button class="card" data-go="profile"><b>👤 Kişisel Bilgiler</b></button><button class="card" data-go="settings"><b>⚙ Ayarlar</b></button></div>`;
-  app.onclick=e=>{const b=e.target.closest("[data-go]");if(b)({hard:renderHard,cards:renderFlashcards,memory:renderMemoryCenter,simulation:renderSimulationSetup,"opera-ballet":renderOperaBallet,"music-ai":renderMusicQuestionGenerator,"khk-music-2025":renderKhkMusic2025Generator,"real-music-2026":renderRealMusic2026Generator,"ags-workbook":()=>EBWorkbook.render(),"saved-sentences":renderSavedSentences,"offline-education":renderOfflineEducation,education:renderEducationCenter,"music-wrong-ai":renderMusicWrongAnalysis,workbook:renderPersonalWorkbook,"wrong-voice-lesson":renderWrongVoiceLesson,"forgetting-risk":renderForgettingRisk,"saved-tests":renderSavedTests,"custom-exam":renderCustomExamBuilder,"ai-center":renderAiStudyCenter,study:renderStudy,profile:renderProfile,settings:renderSettings}[b.dataset.go])()};
+  renderV2632More();
 }
 function renderFlashcards(){
   setTitle("Ezber Kartları","Dokun ve cevabı gör",true);const sections=state.data.sections;
@@ -1160,7 +1102,7 @@ async function buildTextPdf(title,text){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(210,218,226);pdf.line(left,pageHeight-12,left+usableWidth,pageHeight-12);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(8);pdf.setTextColor(95,105,117);
-    pdf.text("Müzik Sınavı V26.31 · Kişisel çalışma çıktısı",left,pageHeight-8);
+    pdf.text("Müzik Sınavı V26.32 · Kişisel çalışma çıktısı",left,pageHeight-8);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-8,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");
@@ -1234,7 +1176,7 @@ async function buildPrintableExamPdf(title,questions){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(205,214,224);pdf.line(left,pageHeight-11,left+width,pageHeight-11);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(7.5);pdf.setTextColor(91,102,116);
-    pdf.text("Müzik Sınavı V26.31 · kaynak doğrulamalı 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
+    pdf.text("Müzik Sınavı V26.32 · kaynak doğrulamalı 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-7,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");

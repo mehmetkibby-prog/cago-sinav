@@ -14,4 +14,4 @@ assert(app.includes("Kaynak: ${sources.map"), "Yazdırılabilir PDF kaynakları 
 assert(!app.includes("URL veya verificationSources üretme"), "Eski kaynaksız üretim talimatı hâlâ etkin");
 assert(app.includes("Wikipedia dışında en az bir resmî"), "Wikipedia'nın yalnız destekleyici kaynak olma kuralı eksik");
 
-console.log("V26.31 2026 soru bazlı kaynak testleri geçti.");
+console.log("V26.32 2026 soru bazlı kaynak testleri geçti.");

@@ -12,7 +12,7 @@ const mustContain = (relative, fragments) => {
 };
 
 const index = mustContain("www/index.html", [
-  "V26.31 · Android Tablet",
+  "V26.32 · Android Tablet",
   "android-tablet-notes.css",
   "android-study-notes.js",
 ]);
@@ -33,13 +33,18 @@ const notes = mustContain("www/android-study-notes.js", [
 new vm.Script(notes, { filename: "android-study-notes.js" });
 
 const app = mustContain("www/app.js", [
-  'data-go="saved-sentences"',
-  '"saved-sentences":renderSavedSentences',
   "selectable-study-text",
   "sentence-save-hint",
-  "V26.31 · Android Tablet",
+  "V26.32 · Android Tablet",
 ]);
 new vm.Script(app, { filename: "app.js" });
+
+const menu = mustContain("www/menu-v2632.js", [
+  "sentences: renderSavedSentences",
+  'action: "sentences"',
+  "Kaydettiğim Cümleler",
+]);
+new vm.Script(menu, { filename: "menu-v2632.js" });
 
 const workbook = mustContain("www/ags-workbook.js", [
   "Tablet için akıcı metin görünümü",

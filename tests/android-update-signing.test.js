@@ -20,7 +20,7 @@ const gitignore = read(".gitignore");
   "secrets.ANDROID_KEYSTORE_PASSWORD",
   "base64 --decode",
   "keytool -list",
-  "Muzik-Sinavi-Android-V26.31-Guncelleme.apk",
+  "Muzik-Sinavi-Android-V26.32-Guncelleme.apk",
 ].forEach(fragment => assert.ok(workflow.includes(fragment), `GitHub sabit imza adımı eksik: ${fragment}`));
 
 assert.ok(gitignore.includes("*.jks") && gitignore.includes("*.keystore"),

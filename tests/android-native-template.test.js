@@ -21,8 +21,8 @@ function mustContain(relativePath, fragments) {
 }
 
 mustContain('native-android/app/build.gradle', [
-  'versionCode 2631',
-  'versionName "26.31"',
+  'versionCode 2632',
+  'versionName "26.32"',
   'applicationId "com.caglar.muziksinavi"',
   'signingConfig signingConfigs.stableUpdate'
 ]);
@@ -66,4 +66,4 @@ mustContain('scripts/prepare-android.sh', [
   'android-tablet-notes.css'
 ]);
 
-console.log('Android tam depo şablonu: PDF, TTS, mikrofon izinleri ve V26.31 sürümü doğrulandı.');
+console.log('Android tam depo şablonu: PDF, TTS, mikrofon izinleri ve V26.32 sürümü doğrulandı.');

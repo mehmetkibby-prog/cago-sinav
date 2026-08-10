@@ -197,9 +197,66 @@
     return String(value || "")
       .normalize("NFKC")
       .toLocaleLowerCase("tr-TR")
+      .replace(/[’‘`´]/g, "'")
+      .replace(/[-‐‑‒–—]+/g, " ")
       .replace(/[^\p{L}\p{N}]+/gu, " ")
       .replace(/\s+/g, " ")
       .trim();
+  }
+
+  function evidenceWords(value) {
+    return evidenceKey(value).split(" ").filter(word => word.length > 1);
+  }
+
+  function summaryEvidenceCandidates(value) {
+    return String(value || "")
+      .replace(/\r/g, "")
+      .split(/(?<=[.!?])\s+|\n+/u)
+      .map(sentence => sentence.replace(/^[-•*\s]+/, "").trim())
+      .filter(sentence => sentence.length >= 12);
+  }
+
+  function resolveSummaryEvidence(summaryText, evidence) {
+    const reference = evidenceKey(summaryText);
+    const normalized = evidenceKey(evidence);
+    const words = evidenceWords(evidence);
+    if (words.length >= 3 && normalized && reference.includes(normalized)) return String(evidence).trim();
+
+    if (words.length < 3) return "";
+    const evidenceSet = new Set(words);
+    let best = { score: 0, overlap: 0, sentence: "" };
+    for (const sentence of summaryEvidenceCandidates(summaryText)) {
+      const sentenceSet = new Set(evidenceWords(sentence));
+      let overlap = 0;
+      evidenceSet.forEach(word => { if (sentenceSet.has(word)) overlap += 1; });
+      const score = overlap / evidenceSet.size;
+      if (score > best.score || (score === best.score && overlap > best.overlap)) best = { score, overlap, sentence };
+    }
+    // AI bazen noktalama/ek farkıyla dayanak döndürüyor. En az üç ortak anlamlı kelime
+    // ve %65 örtüşme varsa kanıtı AI metninden değil, doğrudan özetin gerçek cümlesinden al.
+    if (best.overlap >= 3 && best.score >= 0.65) return best.sentence;
+    return "";
+  }
+
+  function normalizeSummaryQuestion(question, summary, index) {
+    const choices = question?.choices || {};
+    const answer = String(question?.answer || "").toUpperCase();
+    if (!question?.question || !["A", "B", "C", "D"].every(key => String(choices[key] || "").trim()) || !choices[answer]) return null;
+    const evidence = resolveSummaryEvidence(summary.aiText, String(question?.evidence || "").trim());
+    if (!evidence) return null;
+    return {
+      id: `summary_${summary.id}_${Date.now()}_${index}_${Math.random().toString(36).slice(2, 7)}`,
+      question: String(question.question).trim(),
+      choices: { A: String(choices.A).trim(), B: String(choices.B).trim(), C: String(choices.C).trim(), D: String(choices.D).trim() },
+      answer,
+      explanation: `${String(question.explanation || "").trim()}\n\nÖzetteki dayanak: “${evidence}”`,
+      educationArea: summary.title,
+      educationSubtopic: String(question.subtopic || "").trim(),
+      questionType: String(question.type || "").trim(),
+      sources: [{ name: `Gönderilen ${summary.title} özet PDF’i`, url: "" }],
+      summaryEvidence: evidence,
+      summarySourceId: summary.id,
+    };
   }
 
   function renderSummaryAiTestBuilder(selectedId) {
@@ -241,14 +298,23 @@
     if (!summary) return toast("Ders özeti bulunamadı.");
     store.set("summaryAiSubjectV1", subjectId); store.set("summaryAiCountV1", count); store.set("summaryAiLevelV1", level);
     button.disabled = true;
-    status.innerHTML = `<div class="result">${esc(summary.title)} özeti okunuyor; sorular yalnız bu metindeki bilgilerden hazırlanıyor…</div>`;
-    const prompt = `Aşağıda kullanıcının yüklediği “${summary.title}” ders özetinin tam metni bulunuyor.
+
+    const accepted = [];
+    const seenQuestions = new Set();
+    const maxAttempts = 4;
+
+    try {
+      for (let attempt = 1; attempt <= maxAttempts && accepted.length < count; attempt += 1) {
+        const remaining = count - accepted.length;
+        status.innerHTML = `<div class="result">${esc(summary.title)} özeti okunuyor · ${accepted.length}/${count} soru hazır${attempt > 1 ? ` · yalnız eksik ${remaining} soru tamamlanıyor` : ""}…</div>`;
+        const existing = accepted.map(item => item.question).slice(-12);
+        const prompt = `Aşağıda kullanıcının yüklediği “${summary.title}” ders özetinin tam metni bulunuyor.
 
 --- ÖZET METNİ BAŞLANGICI ---
 ${summary.aiText}
 --- ÖZET METNİ SONU ---
 
-Yalnız bu özet metnindeki açık bilgilere dayanarak ${level} düzeyde ${count} özgün, dört seçenekli Eğitim Bilimleri sorusu üret.
+Yalnız bu özet metnindeki açık bilgilere dayanarak ${level} düzeyde ${remaining} özgün, dört seçenekli Eğitim Bilimleri sorusu üret.
 
 Kesin kurallar:
 - Özet dışında hiçbir bilgi, güncel mevzuat, web kaynağı veya genel bilgini kullanma.
@@ -257,47 +323,36 @@ Kesin kurallar:
 - Soruları özetin farklı ana başlıklarına dengeli dağıt. Aynı bilgiyi farklı cümleyle tekrar tekrar sorma.
 - ${level === "Kolay" ? "Temel kavram ve doğrudan ayrımlara ağırlık ver." : level === "Zor" ? "Kavram karşılaştırması, kısa vaka ve güçlü çeldiricilere ağırlık ver; yine de özetin dışına çıkma." : "Temel bilgi, kavram ayrımı ve kısa vaka türlerini dengeli kullan."}
 - Her açıklama 2-3 kısa cümle olsun; doğru cevabın nedenini ve en güçlü çeldiriciden farkını belirt.
-- Her soruda evidence alanına özetten aynen alınmış 4-14 kelimelik bir dayanak parçası yaz. Bu ifade özet metninde birebir bulunmalı.
+- Her soruda evidence alanına özetten KOPYALA-YAPIŞTIR yöntemiyle alınmış, ardışık 3-12 kelimelik bir dayanak parçası yaz. Kelimeleri değiştirme, ekleme, çıkarma veya yeniden çekimleme. Bu ifade özet metninde birebir bulunmalı.
+${existing.length ? `- Şu sorular zaten hazırlandı; bunları veya aynı bilgiyi yeniden sorma:\n${existing.map((item, index) => `${index + 1}. ${item}`).join("\n")}` : ""}
 
 Yalnızca JSON döndür:
-{"questions":[{"subtopic":"özetin ana başlığı","type":"bilgi|karşılaştırma|kısa vaka|olumsuz kök","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"...","evidence":"özetten aynen alınan kısa ifade"}]}`;
-    try {
-      const text = await openAIText(
-        prompt,
-        "Sen yalnızca verilen kullanıcı belgesinden soru yazan titiz bir Eğitim Bilimleri sınav editörüsün. Belgenin dışındaki bilgiyi kullanma, belirsiz bilgiden soru üretme, her soruya belgede birebir bulunan kısa bir kanıt parçası ekle ve JSON dışında hiçbir şey döndürme.",
-        { maxOutputTokens: Math.max(2600, count * 430), timeoutMs: 120000, networkAttempts: 2 }
-      );
-      const parsed = parseJsonResponse(text);
-      if (!Array.isArray(parsed.questions) || parsed.questions.length !== count) {
-        throw new Error(`AI ${count} yerine ${parsed.questions?.length || 0} soru üretti. Lütfen yeniden dene.`);
+{"questions":[{"subtopic":"özetin ana başlığı","type":"bilgi|karşılaştırma|kısa vaka|olumsuz kök","question":"...","choices":{"A":"...","B":"...","C":"...","D":"..."},"answer":"A","explanation":"...","evidence":"özetten aynen kopyalanan kısa ifade"}]}`;
+
+        const text = await openAIText(
+          prompt,
+          "Sen yalnızca verilen kullanıcı belgesinden soru yazan titiz bir Eğitim Bilimleri sınav editörüsün. Belgenin dışındaki bilgiyi kullanma. evidence alanını mutlaka belgeden ardışık kelimeler halinde aynen kopyala. JSON dışında hiçbir şey döndürme.",
+          { maxOutputTokens: Math.max(1800, remaining * 430), timeoutMs: 120000, networkAttempts: 2 }
+        );
+        const parsed = parseJsonResponse(text);
+        const candidates = Array.isArray(parsed?.questions) ? parsed.questions : [];
+
+        candidates.forEach((candidate, candidateIndex) => {
+          if (accepted.length >= count) return;
+          const normalized = normalizeSummaryQuestion(candidate, summary, accepted.length + candidateIndex);
+          if (!normalized) return;
+          const key = evidenceKey(normalized.question);
+          if (!key || seenQuestions.has(key)) return;
+          seenQuestions.add(key);
+          accepted.push(normalized);
+        });
       }
-      const reference = evidenceKey(summary.aiText);
-      const questions = parsed.questions.map((question, index) => {
-        const choices = question?.choices || {};
-        const answer = String(question?.answer || "").toUpperCase();
-        const evidence = String(question?.evidence || "").trim();
-        const evidenceNormalized = evidenceKey(evidence);
-        if (!question?.question || !["A", "B", "C", "D"].every(key => String(choices[key] || "").trim()) || !choices[answer]) {
-          throw new Error(`${index + 1}. sorunun soru/şık yapısı eksik geldi.`);
-        }
-        if (evidenceNormalized.split(" ").length < 4 || !reference.includes(evidenceNormalized)) {
-          throw new Error(`${index + 1}. sorunun özetteki dayanak cümlesi doğrulanamadı. Kaynaksız soru sınava alınmadı.`);
-        }
-        return {
-          id: `summary_${summary.id}_${Date.now()}_${index}`,
-          question: String(question.question).trim(),
-          choices: { A: String(choices.A).trim(), B: String(choices.B).trim(), C: String(choices.C).trim(), D: String(choices.D).trim() },
-          answer,
-          explanation: `${String(question.explanation || "").trim()}\n\nÖzetteki dayanak: “${evidence}”`,
-          educationArea: summary.title,
-          educationSubtopic: String(question.subtopic || "").trim(),
-          questionType: String(question.type || "").trim(),
-          sources: [{ name: `Gönderilen ${summary.title} özet PDF’i`, url: "" }],
-          summaryEvidence: evidence,
-          summarySourceId: summary.id,
-        };
-      });
-      startExam(questions, `Özet Testi · ${summary.title}`);
+
+      if (!accepted.length) throw new Error("AI soruları özet metnine bağlayamadı. Lütfen tekrar dene.");
+      if (accepted.length < count) {
+        status.innerHTML = `<div class="result">${count} sorunun ${accepted.length} tanesi özetle doğrulandı. Doğrulanan sorularla test açılıyor; geçersiz sorular yüzünden tüm test artık sıfırlanmıyor.</div>`;
+      }
+      startExam(accepted, `Özet Testi · ${summary.title}`);
     } catch (error) {
       status.innerHTML = `<div class="result">Hata: ${esc(error?.message || error)}</div>`;
       button.disabled = false;

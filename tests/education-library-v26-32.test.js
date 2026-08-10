@@ -53,10 +53,12 @@ assert.ok(app.includes("renderV2632More()"), "Daha Fazla menüsü gruplandırıl
 ["Müzik ve Sınavlar", "Eğitim Bilimleri", "AI ve Çalışma Araçları", "Kayıtlar ve Gelişim", "2026 Gerçek", "2025 Müzik"].forEach(label => {
   assert.ok(menu.includes(label), `Menü öğesi eksik: ${label}`);
 });
-["Yalnız bu özet metnindeki", "evidenceNormalized", "reference.includes", "openAIText", "208"].forEach(fragment => {
+["Yalnız bu özet metnindeki", "resolveSummaryEvidence", "accepted.length < count", "yalnız eksik ${remaining} soru tamamlanıyor", "openAIText", "208"].forEach(fragment => {
   assert.ok(library.includes(fragment), `Özet tabanlı güvence eksik: ${fragment}`);
 });
 assert.ok(!library.includes("openAIWebText"), "Özet tabanlı test web bilgisini kullanmamalı");
+assert.ok(library.includes("maxAttempts = 4"), "Hatalı dayanakta yalnız eksik sorular yeniden denenmeli");
+assert.ok(!library.includes("sorunun özetteki dayanak cümlesi doğrulanamadı"), "Tek sorudaki dayanak hatası tüm testi iptal etmemeli");
 assert.ok(css.includes(".kpss-book-frame") && css.includes("overflow:auto"), "Kitap yakınlaştırma/taşma katmanı eksik");
 assert.ok(gradle.includes("versionCode 2632") && gradle.includes('versionName "26.32"'), "Android V26.32 sürüm kodu yanlış");
 assert.ok(gradle.includes("signingConfigs") && workflow.includes("ANDROID_KEYSTORE_BASE64"), "Sabit güncelleme imzası korunmadı");

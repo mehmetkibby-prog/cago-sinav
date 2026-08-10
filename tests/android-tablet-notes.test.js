@@ -12,7 +12,7 @@ const mustContain = (relative, fragments) => {
 };
 
 const index = mustContain("www/index.html", [
-  "V26.29 · Android Tablet",
+  "V26.30 · Android Tablet",
   "android-tablet-notes.css",
   "android-study-notes.js",
 ]);
@@ -37,7 +37,7 @@ const app = mustContain("www/app.js", [
   '"saved-sentences":renderSavedSentences',
   "selectable-study-text",
   "sentence-save-hint",
-  "V26.29 · Android Tablet",
+  "V26.30 · Android Tablet",
 ]);
 new vm.Script(app, { filename: "app.js" });
 

@@ -11,7 +11,7 @@
   ]);
   const SHORT_TOKENS=new Set(["do","fa","mi","la","si","rit","noh"]);
   const SOURCE_BLOCKLIST=[
-    "wikipedia.org","reddit.com","quora.com","facebook.com","instagram.com","tiktok.com","x.com","twitter.com","youtube.com","youtu.be","blogspot.com","wordpress.com","medium.com","pinterest.com","quizlet.com","salamuzik.com","yurtrenkleri.com","sinavtime.com","onlinesoru.com","sorumarket.com","sinavcoz.com"
+    "reddit.com","quora.com","facebook.com","instagram.com","tiktok.com","x.com","twitter.com","youtube.com","youtu.be","blogspot.com","wordpress.com","medium.com","pinterest.com","quizlet.com","salamuzik.com","yurtrenkleri.com","sinavtime.com","onlinesoru.com","sorumarket.com","sinavcoz.com"
   ];
   const TRUSTED_HOST_PARTS=[
     "ktb.gov.tr","kulturportali.gov.tr","operabale.gov.tr","trt.net.tr","dergipark.org.tr","tez.yok.gov.tr","islamansiklopedisi.org.tr","aa.com.tr","britannica.com","oxfordmusiconline.com","metmuseum.org","moma.org","carnegiehall.org","nyphil.org","laphil.com","berliner-philharmoniker.de","wienerphilharmoniker.at","metopera.org","royalballetandopera.org.uk","ballet.org.uk","operadeparis.fr","bnf.fr","loc.gov","si.edu","unesco.org","jstor.org","cambridge.org","oup.com","sagepub.com","springer.com","tandfonline.com","sciencedirect.com","ncbi.nlm.nih.gov","nih.gov"
@@ -211,7 +211,7 @@
   function referenceExclusions(){return REFERENCE_EXCLUSIONS.map(item=>makeRecord(item,item))}
 
   return Object.freeze({
-    VERSION:"26.28",LETTERS,normalize,compact,tokens,jaccard,dice,inferAnchor,makeRecord,duplicateReason,auditNovelty,
+    VERSION:"26.30",LETTERS,normalize,compact,tokens,jaccard,dice,inferAnchor,makeRecord,duplicateReason,auditNovelty,
     validateSources,isTrustedHost,balanceAnswers,selectLeastUsedFocuses,referenceExclusions
   });
 });

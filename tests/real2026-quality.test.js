@@ -59,6 +59,18 @@ const acceptedSources=quality.validateSources([
 ]);
 assert.equal(acceptedSources.ok,true,"İki bağımsız güvenilir kurum kaynağı kabul edilmeli");
 
+const wikipediaWithInstitution=quality.validateSources([
+  {name:"Wikipedia - Franz Schubert",url:"https://tr.wikipedia.org/wiki/Franz_Schubert"},
+  {name:"Encyclopaedia Britannica - Franz Schubert",url:"https://www.britannica.com/biography/Franz-Schubert"}
+]);
+assert.equal(wikipediaWithInstitution.ok,true,"Wikipedia, ikinci bir güvenilir kurumsal kaynakla birlikte kabul edilmeli");
+
+const wikipediaOnly=quality.validateSources([
+  {name:"Türkçe Wikipedia",url:"https://tr.wikipedia.org/wiki/Franz_Schubert"},
+  {name:"İngilizce Wikipedia",url:"https://en.wikipedia.org/wiki/Franz_Schubert"}
+]);
+assert.equal(wikipediaOnly.ok,false,"Yalnız Wikipedia kaynakları resmî/akademik çapraz doğrulama yerine geçmemeli");
+
 const ten=Array.from({length:10},(_,index)=>question(`Özgün soru ${index+1}`,`Doğru ${index+1}`,`Doğru ${index+1} açıklamasıdır.`));
 const balanced=quality.balanceAnswers(ten,2621),counts=Object.fromEntries(quality.LETTERS.map(letter=>[letter,0]));
 balanced.forEach(item=>counts[item.answer]++);

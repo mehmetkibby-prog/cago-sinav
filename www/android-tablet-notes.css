@@ -10,7 +10,17 @@
   word-break:normal;
 }
 
-/* V26.29: Android WebView tablet layout is deliberately single-column at the
+/* V26.30: 2026 kaynakları cevap verilene kadar nötr bir kilit kartında kalır. */
+.question-sources.source-locked{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.question-sources.source-locked small{display:block;line-height:1.45}
+
+/* V26.30: Android WebView tablet layout is deliberately single-column at the
    structural level. Every child may shrink and every long label may wrap. */
 .ags-workbook-page,
 .ags-workbook-page *,

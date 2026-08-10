@@ -91,7 +91,7 @@ function toggleHardQuestion(q,on){
   store.set("hardQuestionItems",items.slice(0,1000));store.set("hardQuestions",[...idSet]);
   toast(on?"Soru Zor Sorular bölümüne kaydedildi":"Soru Zor Sorular bölümünden çıkarıldı");
 }
-function setTitle(t,s="V26.29 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
+function setTitle(t,s="V26.30 · Android Tablet",back=false){$("#page-title").textContent=t;$("#subtitle").textContent=s;$("#back").classList.toggle("hidden",!back)}
 function nav(r){if(typeof clearSelectionToolbar==="function")clearSelectionToolbar();if(state.voiceLesson?.playing)stopWrongVoiceLesson(false);state.route=r;document.querySelectorAll("#bottom-nav button").forEach(b=>b.classList.toggle("active",b.dataset.route===r));({home:renderHome,wrong:renderWrong,stats:renderStats,voice:renderVoice,more:renderMore,settings:renderSettings}[r]||renderHome)()}
 
 function renderHome(){
@@ -188,6 +188,12 @@ function questionSourcesHtml(q){
   const styleUrl=safeHttpUrl(style?.url),styleName=esc(style?.name||"Soru biçimi örneği");
   return `<aside class="question-sources"><b>🔎 Bu sorunun kaynakları</b>${verified?`<small>Bilgi doğrulaması</small><ul>${verified}</ul>`:""}${style?`<small>Yalnız soru biçimi/çeşidi örneği</small><div>${styleUrl?`<a href="${esc(styleUrl)}" target="_blank" rel="noopener noreferrer">${styleName}</a>`:styleName}</div>`:""}</aside>`;
 }
+function isReal2026Question(q){return /^2026 Gerçek Sınav Tarzı\s*·/i.test(String(q?.area||""))}
+function examQuestionSourcesHtml(q){
+  if(!isReal2026Question(q))return questionSourcesHtml(q);
+  if(!state.answered)return '<aside class="question-sources source-locked" id="exam-question-sources"><b>🔒 Kaynaklar cevaplandıktan sonra açılacak</b><small>Sınav sırasında doğru cevabı ele vermemesi için gizlendi.</small></aside>';
+  return questionSourcesHtml(q);
+}
 function renderQuestionList(qs,title){setTitle(title,"Cevaplı çalışma listesi",true);app.innerHTML=`<div class="list">${qs.map((q,i)=>`<article class="list-item"><h3>${i+1}. ${esc(q.question)}</h3><div class="muted">Doğru cevap: <b>${q.answer}) ${esc(q.choices[q.answer])}</b></div>${q.explanation?`<p>${esc(q.explanation)}</p>`:""}${questionSourcesHtml(q)}</article>`).join("")}</div>`}
 function startExam(qs,title){
   if(!qs.length)return toast("Bu listede soru yok.");
@@ -199,7 +205,7 @@ function renderQuestion(){
   setTitle(state.examTitle,`Soru ${state.index+1} / ${state.exam.length}`,true);
   app.innerHTML=`<div class="exam-head"><span class="pill">Doğru ${state.correct} · Yanlış ${state.wrong}</span><div class="exam-head-actions"><button class="secondary save-test-button" id="save-test">💾 Testi Kaydet</button><label class="hard-toggle"><input id="hard-check" type="checkbox" ${hard?"checked":""}> ★ Zor</label></div></div>
   <div class="progress"><i style="width:${pct}%"></i></div><div class="question">${esc(q.question)}</div>
-  ${questionSourcesHtml(q)}
+  ${examQuestionSourcesHtml(q)}
   ${questionVoiceButtonHtml()}
   ${choiceEliminationHtml()}
   <div>${Object.entries(q.choices).map(([k,v])=>`<button class="choice original-choice ${eliminated.has(k)?"eliminated":""}" data-key="${k}"><strong>${k}</strong><span>${esc(v)}</span></button>`).join("")}</div>
@@ -306,6 +312,7 @@ function answer(key){
   document.querySelectorAll(".original-choice").forEach(b=>{b.disabled=true;if(b.dataset.key===q.answer)b.classList.add("correct");else if(b.dataset.key===key)b.classList.add("wrong")});
   if($("#elimination-toggle"))$("#elimination-toggle").disabled=true;
   $("#feedback").innerHTML=`<div class="result"><b>${ok?"Doğru!":"Yanlış."}</b>${!ok?`<br>Doğru cevap: ${q.answer}) ${esc(q.choices[q.answer])}`:""}</div>${!ok?distractorLabHtml(q,key):""}`;
+  const lockedSources=$("#exam-question-sources");if(lockedSources)lockedSources.outerHTML=questionSourcesHtml(q);
   if(!ok)mountDistractorLab(q,key);
   $("#next").classList.remove("hidden");
 }
@@ -1153,7 +1160,7 @@ async function buildTextPdf(title,text){
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(210,218,226);pdf.line(left,pageHeight-12,left+usableWidth,pageHeight-12);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(8);pdf.setTextColor(95,105,117);
-    pdf.text("Müzik Sınavı V26.29 · Kişisel çalışma çıktısı",left,pageHeight-8);
+    pdf.text("Müzik Sınavı V26.30 · Kişisel çalışma çıktısı",left,pageHeight-8);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-8,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");
@@ -1218,12 +1225,16 @@ async function buildPrintableExamPdf(title,questions){
   for(let i=0;i<questions.length;i+=10)answerRows.push(questions.slice(i,i+10).map((q,j)=>`${i+j+1}-${q.answer}`).join("     "));
   answerRows.forEach(row=>write(row,{size:10.3,bold:true,gap:3}));
   y+=3;write("KISA AÇIKLAMALAR",{size:12,bold:true,gap:4});
-  questions.forEach((q,index)=>write(`${index+1}. ${q.answer} — ${q.explanation||"Doğru cevap, soru kökündeki bilgiye göre bu seçenektir."}`,{size:9.1,gap:2.3,lineHeight:4.5}));
+  questions.forEach((q,index)=>{
+    write(`${index+1}. ${q.answer} — ${q.explanation||"Doğru cevap, soru kökündeki bilgiye göre bu seçenektir."}`,{size:9.1,gap:1.4,lineHeight:4.5});
+    const sources=Array.isArray(q.sources)?q.sources:(Array.isArray(q.verificationSources)?q.verificationSources:[]);
+    if(sources.length)write(`Kaynak: ${sources.map(source=>`${source.name}: ${source.url}`).join(" | ")}`,{size:7.7,gap:2.6,lineHeight:4.1,indent:3});
+  });
   const pages=pdf.getNumberOfPages();
   for(let page=1;page<=pages;page++){
     pdf.setPage(page);pdf.setDrawColor(205,214,224);pdf.line(left,pageHeight-11,left+width,pageHeight-11);
     pdf.setFont("DejaVuSerif","normal");pdf.setFontSize(7.5);pdf.setTextColor(91,102,116);
-    pdf.text("Müzik Sınavı V26.29 · tekrarsız 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
+    pdf.text("Müzik Sınavı V26.30 · kaynak doğrulamalı 2026 gerçek sınav tarzı deneme",left,pageHeight-7);
     pdf.text(`${page} / ${pages}`,pageWidth-right,pageHeight-7,{align:"right"});
   }
   const arrayBuffer=pdf.output("arraybuffer");
@@ -2135,7 +2146,8 @@ function renderRealMusic2026Generator(){
   <label>Kaç soru oluşturulsun? (5–100)</label><input id="real-2026-count" type="number" min="5" max="100" step="1" value="${Math.min(100,Math.max(5,saved))}">
   <label class="check-row"><input type="checkbox" checked disabled><span>Her soru A–E beş seçenekli, tek doğru cevaplı ve gerçek 2026 sınav üslubunda üretilecek</span></label>
   <div class="print-exam-note"><b>↻ Tekrar önleme hafızası:</b> Son ${REAL_2026_COMPARISON_LIMIT} soru ile bu iki PDF'de saptanan tekrarlar karşılaştırılır. Aynı bilgi farklı cümleyle sorulsa bile reddedilir. Bu cihazda ${real2026History().length} yeni soru kayıtlı.</div>
-  <div class="print-exam-note"><b>⚡ Hızlı üretim:</b> 5–10 soru tek hızlı AI çağrısında hazırlanır. Daha büyük denemeler 10'ar soruluk az sayıda pakete ayrılır; üretim sırasında ağır web araması yapılmaz.</div>
+  <div class="print-exam-note"><b>🔎 Soru bazlı kaynak doğrulaması:</b> Her soru MEB, üniversite/konservatuvar, resmî kurum, akademik yayın veya güvenilir müzik ansiklopedilerinden en az iki bağımsız kaynakla doğrulanır. Kaynaklar cevaptan sonra açılır.</div>
+  <div class="print-exam-note"><b>⚡ Dengeli üretim:</b> Sorular en fazla 10'ar soruluk araştırma paketleriyle ve iki eşzamanlı işçiyle hazırlanır; geçen her paket hemen cihazda saklanır.</div>
   <div class="print-exam-note"><b>🛡 Tamamlama koruması:</b> Geçen her paket cihazda taslak olarak saklanır. Uygulama kapanır veya bir çağrı hata verirse yeniden başlamak yerine eksik sorulardan devam eder.</div>
   <div class="print-exam-note"><b>🖨 Kalemle çözmek için:</b> Yazdırılabilir denemede sorular önce, cevap anahtarı ve kısa açıklamalar ayrı son sayfalarda hazırlanır.</div>
   <div class="actions"><button class="primary" id="real-2026-generate">Ekranda Deneme Oluştur</button><button class="secondary print-exam-button" id="real-2026-print">🖨 A4 PDF / Yazdır</button></div><div id="real-2026-status"></div>`;
@@ -2154,7 +2166,10 @@ ${job.avoidList}
 
 Kurallar:
 - Her satır için yalnız kesin, temel ve tartışmasız bir olgu seç. Emin olmadığın, kaynağa göre değişen veya “ilk” iddiası taşıyan bilgiyi kullanma; aynı focusKey ve angleKey ile daha güvenli başka bir olgu seç.
-- URL veya verificationSources üretme. Bu hızlı üretim aşamasında web araması yapma; doğruluk aşağıdaki kesin bilgi çıpaları ve uygulamanın yerel denetimleriyle korunacaktır.
+- Her sorudaki olguyu web üzerinde gerçekten araştır ve verificationSources alanında o soruyu doğrulamak için açıp kullandığın 2-4 kaynağın tam adını ve doğrudan sayfa URL'sini ver. URL uydurma, arama sonucu veya kurum ana sayfası verme.
+- Kaynak önceliği: MEB ve Kültür ve Turizm Bakanlığı gibi resmî kurumlar; üniversite ve konservatuvar yayınları; hakemli akademik yayınlar; Grove/Oxford Music Online, Encyclopaedia Britannica ve büyük müze, opera, orkestra, kütüphane arşivleri.
+- Türk müziği ve çalgılarında mümkünse MEB, TRT, Kültür Portalı, İTÜ Türk Musikisi Devlet Konservatuvarı ve devlet konservatuvarlarını; Batı müziğinde üniversite/konservatuvar, besteci arşivi, opera/orkestra/müze ve güvenilir müzik ansiklopedilerini kullan.
+- Wikipedia'yı konuya giriş ve ikinci doğrulama kaynağı olarak kullanabilirsin; ancak her soruda Wikipedia dışında en az bir resmî, akademik, kurumsal veya güvenilir ansiklopedi kaynağı da bulunmalıdır. Blog, forum, sosyal medya, satış sitesi, test sitesi ve kaynağı belirsiz soru bankalarını bilgi doğrulama kaynağı olarak kullanma. Kaynaklar çelişirse o bilgiden soru üretme.
 - Yalnız soru kökünü değiştirmek yenilik değildir. Önceki sorudaki doğru cevap, hedef kişi/eser/terim ve ölçülen olgu değişmeden kalıyorsa o soru yasaktır.
 - Her odak için farklı bir hedef kişi, eser, terim, çalgı veya olgu seç. Paket içinde aynı doğru cevabı, hedef varlığı, bilgi veya soru kalıbını kullanma.
 - Soru kökleri gerçek sınavdaki gibi çoğunlukla kısa ve doğrudan, gerektiğinde orta uzunlukta olsun; akademik makale dili kullanma.
@@ -2173,15 +2188,15 @@ Yalnız yapılandırılmış JSON döndür.`;
 async function generateReal2026Batch(job,index,totalJobs,priorRecords){
   const focusKeys=job.focuses.map(focus=>focus.key),angleKeys=[...new Set(job.focuses.map(focus=>focus.angleKey))];
   const prompt=real2026Prompt({...job,avoidList:real2026AvoidListForFocuses(job.focuses,priorRecords)},index,totalJobs);
-  const text=await openAIWebText(prompt,"Sen KKTC müzik öğretmenliği alan sınavları için hızlı ve titiz bir soru editörüsün. Verilen odak planını aynen izle; yalnız kesin bildiğin, tartışmasız bilgileri kullan. Adayın hatırladığı 2026 soru türlerini kapsam ve zorluk profili olarak al; önceki doğru cevabı, hedef varlığı veya ölçülen bilgiyi tekrar etme. Gereksiz açıklama yapmadan yalnız istenen yapılandırılmış JSON'u döndür.",{model:"gpt-4.1-mini",maxOutputTokens:Math.max(2600,job.count*430),jsonSchema:real2026CandidateSchema(job.count,focusKeys,angleKeys,false),schemaName:`real_music_2026_fast_${index+1}_${Date.now()%100000}`,webSearch:false,reasoningEffort:"low",timeoutMs:REAL_2026_REQUEST_TIMEOUT_MS,networkAttempts:1});
+  const text=await openAIWebText(prompt,"Sen KKTC müzik öğretmenliği alan sınavları için araştırma yapan titiz bir soru editörüsün. Her sorudaki olguyu gerçekten açtığın resmî, akademik veya güvenilir kurumsal kaynaklarla doğrula; her soru için 2-4 doğrudan kaynak bağlantısı ver ve hiçbir URL uydurma. Verilen odak planını aynen izle; yalnız kesin ve tartışmasız bilgileri kullan. Adayın hatırladığı 2026 soru türlerini kapsam ve zorluk profili olarak al; önceki doğru cevabı, hedef varlığı veya ölçülen bilgiyi tekrar etme. Yalnız istenen yapılandırılmış JSON'u döndür.",{model:"gpt-4.1-mini",maxOutputTokens:Math.max(3400,job.count*620),jsonSchema:real2026CandidateSchema(job.count,focusKeys,angleKeys,true),schemaName:`real_music_2026_sourced_${index+1}_${Date.now()%100000}`,webSearch:true,reasoningEffort:"low",timeoutMs:REAL_2026_REQUEST_TIMEOUT_MS,networkAttempts:1});
   try{
     const parsed=parseJsonResponse(text);
     if(!Array.isArray(parsed.questions)||parsed.questions.length!==job.count)throw new Error("Araştırma paketi eksik üretildi.");
-    const normalized=parsed.questions.map((q,i)=>normalizeReal2026Question(q,job,index,i,false)),byFocus=new Map(normalized.map(question=>[question.focusKey,question]));
+    const normalized=parsed.questions.map((q,i)=>normalizeReal2026Question(q,job,index,i,true)),byFocus=new Map(normalized.map(question=>[question.focusKey,question]));
     if(byFocus.size!==job.count||job.focuses.some(focus=>!byFocus.has(focus.key)))throw new Error("Odak planındaki konuların tamamı birer kez kullanılmadı.");
     const ordered=job.focuses.map(focus=>byFocus.get(focus.key)),audit=REAL_2026_QUALITY.auditNovelty(ordered,priorRecords);
     if(!audit.ok)throw new Error(`Tekrar denetimi soruyu reddetti: ${audit.duplicates[0].reason}`);
-    return ordered.map((q,i)=>{const focus=job.focuses.find(item=>item.key===q.focusKey);return {id:`real2026_${Date.now()}_${index}_${i}_${Math.random().toString(36).slice(2,7)}`,question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation,area:`2026 Gerçek Sınav Tarzı · ${q.topic||q.blueprintArea}`,blueprintArea:q.blueprintArea,topic:q.topic,difficulty:q.difficulty,focusKey:q.focusKey,angleKey:q.angleKey,conceptFamily:q.conceptFamily,targetEntity:q.targetEntity,testedFact:q.testedFact,sources:[],verificationSources:[],sourceLabel:"Hızlı AI üretimi ve yerel doğruluk denetimi",_planIndex:focus.planIndex}});
+    return ordered.map((q,i)=>{const focus=job.focuses.find(item=>item.key===q.focusKey);return {id:`real2026_${Date.now()}_${index}_${i}_${Math.random().toString(36).slice(2,7)}`,question:q.question,choices:q.choices,answer:q.answer,explanation:q.explanation,area:`2026 Gerçek Sınav Tarzı · ${q.topic||q.blueprintArea}`,blueprintArea:q.blueprintArea,topic:q.topic,difficulty:q.difficulty,focusKey:q.focusKey,angleKey:q.angleKey,conceptFamily:q.conceptFamily,targetEntity:q.targetEntity,testedFact:q.testedFact,sources:q.verificationSources,verificationSources:q.verificationSources,sourceLabel:"Web araştırmasıyla soru bazında doğrulandı",_planIndex:focus.planIndex}});
   }catch(error){throw real2026ContentError(error)}
 }
 async function generateRealMusic2026Exam(mode="screen"){

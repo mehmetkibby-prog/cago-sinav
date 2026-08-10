@@ -2,12 +2,14 @@
   "use strict";
 
   const MANIFEST_URL = "education-library/education-library.json";
+  const KPSS_QUESTION_BANK_URL = "education-library/kpss-question-bank.json";
   const SUMMARY_PAGE_KEY = "educationSummaryPagesV1";
   const SUMMARY_MODE_KEY = "educationSummaryModesV1";
   const SUMMARY_ZOOM_KEY = "educationSummaryZoomV1";
   const BOOK_PAGE_KEY = "kpssEducationBookPageV1";
   const BOOK_ZOOM_KEY = "kpssEducationBookZoomV1";
   let manifestPromise = null;
+  let kpssQuestionBankPromise = null;
   let renderToken = 0;
 
   function loadManifest() {
@@ -27,6 +29,25 @@
       });
     }
     return manifestPromise;
+  }
+
+
+  function loadKpssQuestionBank() {
+    if (!kpssQuestionBankPromise) {
+      kpssQuestionBankPromise = fetch(KPSS_QUESTION_BANK_URL).then(response => {
+        if (!response.ok) throw new Error("KPSS soru bankası verisi bulunamadı.");
+        return response.json();
+      }).then(bank => {
+        if (!Array.isArray(bank.questions) || bank.questions.length < 1200) {
+          throw new Error("KPSS soru bankası eksiksizlik denetiminden geçemedi.");
+        }
+        return bank;
+      }).catch(error => {
+        kpssQuestionBankPromise = null;
+        throw error;
+      });
+    }
+    return kpssQuestionBankPromise;
   }
 
   function paddedPage(page, digits = 2) {
@@ -62,9 +83,9 @@
       if (!renderIsActive(token)) return;
       app.innerHTML = `<div class="education-library-page">
         <section class="education-library-hero">
-          <div><span class="library-eyebrow">YENİ · V26.32</span><h2>Eğitim Bilimleri Kütüphanesi</h2><p>Gönderdiğin altı özeti özgün sayfa düzeniyle oku, yalnız seçtiğin özete dayalı AI testi oluştur veya 208 sayfalık KPSS test kitabını çevrimdışı aç.</p></div>
+          <div><span class="library-eyebrow">YENİ · V26.32</span><h2>Eğitim Bilimleri Kütüphanesi</h2><p>Gönderdiğin altı özeti oku, yalnız seçtiğin özete dayalı AI testi oluştur veya 208 sayfalık KPSS kitabındaki gerçek soruları etkileşimli test olarak çöz.</p></div>
           <div class="education-library-metrics"><span><b>6</b><small>Ders özeti</small></span><span><b>8</b><small>Özet sayfası</small></span><span><b>208</b><small>Test kitabı sayfası</small></span></div>
-          <div class="education-library-actions"><button class="primary" id="summary-ai-open">✨ Özetlerden AI Testi</button><button class="secondary" id="kpss-book-open">📚 KPSS Test Kitabı</button></div>
+          <div class="education-library-actions"><button class="primary" id="kpss-question-bank-open">📝 KPSS Kitabı Testleri</button><button class="secondary" id="summary-ai-open">✨ Özetlerden AI Testi</button><button class="secondary" id="kpss-book-open">📚 Kitap Sayfaları</button></div>
         </section>
 
         <section class="education-library-section">
@@ -79,7 +100,8 @@
           <div class="education-library-heading"><div><small>TÜM EĞİTİM ARAÇLARI</small><h3>Kitap, soru bankası ve AI</h3></div></div>
           <div class="education-existing-tools">
             <button data-education-tool="summary-ai"><span>✨</span><b>Özet Tabanlı AI Testi</b><small>Yalnız seçtiğin PDF özetindeki bilgiler</small></button>
-            <button data-education-tool="kpss-book"><span>📚</span><b>KPSS Eğitim Bilimleri Kitabı</b><small>208 sayfa · çevrimdışı okuyucu</small></button>
+            <button data-education-tool="kpss-questions"><span>📝</span><b>KPSS Kitabı Soru Bankası</b><small>1.200+ gerçek kitap sorusu · cevap anahtarlı test</small></button>
+            <button data-education-tool="kpss-book"><span>📚</span><b>KPSS Kitabı Sayfaları</b><small>208 sayfa · orijinal sayfa okuyucu</small></button>
             <button data-education-tool="ags"><span>📗</span><b>AGS Eğitim Bilimleri Kitabı</b><small>40 sayfa · konu anlatımı ve 81 soru</small></button>
             <button data-education-tool="offline"><span>📘</span><b>Çevrimdışı Soru Bankası</b><small>${offlineEducationQuestions().length} hazır soru</small></button>
             <button data-education-tool="ai-center"><span>🎓</span><b>AI Eğitim Bilimleri Merkezi</b><small>7 alanlık konu anlatımı ve çalışma araçları</small></button>
@@ -88,10 +110,12 @@
         </section>
       </div>`;
       document.querySelector("#summary-ai-open").onclick = () => renderSummaryAiTestBuilder();
+      document.querySelector("#kpss-question-bank-open").onclick = () => renderKpssQuestionBank();
       document.querySelector("#kpss-book-open").onclick = () => renderKpssBookReader();
       document.querySelectorAll("[data-summary-id]").forEach(button => button.onclick = () => renderEducationSummary(button.dataset.summaryId));
       document.querySelectorAll("[data-education-tool]").forEach(button => button.onclick = () => ({
         "summary-ai": renderSummaryAiTestBuilder,
+        "kpss-questions": renderKpssQuestionBank,
         "kpss-book": renderKpssBookReader,
         ags: () => EBWorkbook.render(),
         offline: renderOfflineEducation,
@@ -147,6 +171,61 @@
       document.querySelectorAll("[data-summary-zoom]").forEach(button => button.onclick = () => renderEducationSummary(summary.id, page, mode, +button.dataset.summaryZoom));
     }).catch(error => {
       if (renderIsActive(token)) showLoadError(error, () => renderEducationSummary(id));
+    });
+  }
+
+  function renderKpssQuestionBank() {
+    const token = ++renderToken;
+    setTitle("KPSS Kitabı Soru Bankası", "Kitaptaki gerçek sorular", true);
+    app.innerHTML = loadingCard("KPSS Eğitim Bilimleri soruları hazırlanıyor…", token);
+    loadKpssQuestionBank().then(bank => {
+      if (!renderIsActive(token)) return;
+      const areas = Object.entries(bank.areas || {});
+      app.innerHTML = `<div class="education-library-page summary-ai-page">
+        <div class="reader-return-row"><button class="secondary" id="kpss-bank-back">‹ Eğitim Bilimleri</button><span class="summary-grounded-badge">KİTABIN KENDİ SORULARI</span></div>
+        <section class="summary-ai-hero"><span>📝</span><div><small>KPSS EĞİTİM BİLİMLERİ · İSEM</small><h2>Kitap Soru Bankası</h2><p>${bank.questionCount} soru, kitabın kendi cevap anahtarıyla etkileşimli teste dönüştürüldü. Sorular AI tarafından yeniden yazılmaz.</p></div></section>
+        <div class="summary-ai-form">
+          <label>Alan</label><select id="kpss-bank-area"><option value="all">Tüm alanlar · ${bank.questionCount} soru</option>${areas.map(([area,count]) => `<option value="${esc(area)}">${esc(area)} · ${count} soru</option>`).join("")}</select>
+          <label>Kitaptaki yaprak test</label><select id="kpss-bank-test"><option value="all">Seçili alandaki tüm testler</option></select>
+          <div class="ai-control-grid"><div><label>Soru sayısı</label><select id="kpss-bank-count"><option>10</option><option selected>20</option><option>40</option><option>60</option><option value="all">Tümü</option></select></div><div><label>Sıralama</label><select id="kpss-bank-order"><option value="shuffle" selected>Karışık</option><option value="book">Kitaptaki sıra</option></select></div></div>
+          <div class="summary-ai-rules"><span>✓ A–E şıkları kitaptan</span><span>✓ Doğru cevap kitabın cevap anahtarından</span><span>✓ Yanlışlar Eğitim Bilimleri yanlışlarına kaydolur</span><span>✓ Orijinal sayfa soru içinde açılabilir</span></div>
+          <div class="education-library-actions"><button class="primary" id="kpss-bank-start">▶ Testi Başlat</button><button class="secondary" id="kpss-bank-reader">📚 Kitap Sayfalarını Aç</button></div>
+          <div id="kpss-bank-status" class="result">${bank.tests?.length || 103} yaprak test · ${bank.questionCount} etkileşimli soru hazır.</div>
+        </div>
+      </div>`;
+      const areaSelect = document.querySelector("#kpss-bank-area");
+      const testSelect = document.querySelector("#kpss-bank-test");
+      const refreshTests = () => {
+        const area = areaSelect.value;
+        const tests = (bank.tests || []).filter(test => area === "all" || test.area === area);
+        testSelect.innerHTML = `<option value="all">Seçili alandaki tüm testler</option>${tests.map(test => `<option value="${test.test}">Test ${test.test} · ${esc(test.title)} (${test.questions})</option>`).join("")}`;
+      };
+      refreshTests();
+      areaSelect.onchange = refreshTests;
+      document.querySelector("#kpss-bank-back").onclick = renderEducationLibraryHub;
+      document.querySelector("#kpss-bank-reader").onclick = () => renderKpssBookReader();
+      document.querySelector("#kpss-bank-start").onclick = () => {
+        const area = areaSelect.value;
+        const test = testSelect.value;
+        const countValue = document.querySelector("#kpss-bank-count").value;
+        const order = document.querySelector("#kpss-bank-order").value;
+        let items = bank.questions.filter(question => (area === "all" || question.educationArea === area) && (test === "all" || String(question.test) === test));
+        if (!items.length) return toast("Bu seçimde çözülebilecek soru bulunamadı.");
+        items = items.map(question => ({
+          ...question,
+          explanation: question.explanation || "",
+          bookPageImage: question.sourceImage,
+          bookSourcePage: question.sourcePage,
+          sources: [{ name: `KPSS Eğitim Bilimleri · Test ${question.test} · Sayfa ${question.sourcePage}`, url: "" }]
+        }));
+        if (order === "shuffle") items = shuffle(items);
+        const wanted = countValue === "all" ? items.length : Math.min(+countValue, items.length);
+        items = items.slice(0, wanted);
+        const label = test === "all" ? (area === "all" ? "KPSS Kitabı Karma Test" : `KPSS Kitabı · ${area}`) : `KPSS Kitabı · Test ${test}`;
+        startExam(items, label);
+      };
+    }).catch(error => {
+      if (renderIsActive(token)) showLoadError(error, renderKpssQuestionBank);
     });
   }
 
@@ -361,6 +440,7 @@ Yalnızca JSON döndür:
 
   globalThis.renderEducationLibraryHub = renderEducationLibraryHub;
   globalThis.renderEducationSummary = renderEducationSummary;
+  globalThis.renderKpssQuestionBank = renderKpssQuestionBank;
   globalThis.renderKpssBookReader = renderKpssBookReader;
   globalThis.renderSummaryAiTestBuilder = renderSummaryAiTestBuilder;
 })();

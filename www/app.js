@@ -166,6 +166,7 @@ function renderQuestion(){
   setTitle(state.examTitle,`Soru ${state.index+1} / ${state.exam.length}`,true);
   app.innerHTML=`<div class="exam-head"><span class="pill">Doğru ${state.correct} · Yanlış ${state.wrong}</span><div class="exam-head-actions"><button class="secondary save-test-button" id="save-test">💾 Testi Kaydet</button><label class="hard-toggle"><input id="hard-check" type="checkbox" ${hard?"checked":""}> ★ Zor</label></div></div>
   <div class="progress"><i style="width:${pct}%"></i></div><div class="question">${esc(q.question)}</div>
+  ${q.bookPageImage?`<details class="book-question-source"><summary>📄 Orijinal kitap sayfasını göster${q.bookSourcePage?` · s. ${q.bookSourcePage}`:""}</summary><img src="${esc(q.bookPageImage)}" alt="KPSS kitabı kaynak sayfası" style="display:block;width:100%;height:auto;margin-top:10px;border-radius:14px" loading="lazy"></details>`:""}
   ${examQuestionSourcesHtml(q)}
   ${questionVoiceButtonHtml()}
   ${choiceEliminationHtml()}

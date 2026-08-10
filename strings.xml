@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Müzik Sınavı V26.32</string>
+    <string name="title_activity_main">Müzik Sınavı V26.32</string>
+    <string name="package_name">com.caglar.muziksinavi</string>
+    <string name="custom_url_scheme">com.caglar.muziksinavi</string>
+</resources>

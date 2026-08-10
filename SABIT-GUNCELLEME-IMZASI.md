@@ -1,25 +1,29 @@
 # Sabit Android Güncelleme İmzası
 
-V26.31'den itibaren GitHub'ın her çalışmada oluşturduğu geçici debug imzası
-kullanılmaz. APK, yalnız deponun GitHub Actions Secrets alanında bulunan kalıcı
-anahtarla imzalanır.
+V26.32, V26.31'de kurulan kalıcı Android güncelleme imzasını aynen kullanır.
+Paket kimliği de değişmez: `com.caglar.muziksinavi`.
 
-## Bir kez yapılacak kurulum
+## Mevcut GitHub deposunda
 
-1. Ayrı teslim edilen `Muzik-Sinavi-GitHub-Sabit-Imza-Kurulumu.zip` dosyasını
-   açın. Bu özel paketi GitHub'a yüklemeyin ve kimseyle paylaşmayın.
-2. GitHub deposunda **Settings → Secrets and variables → Actions** yolunu açın.
-3. **New repository secret** ile `ANDROID_KEYSTORE_BASE64` adlı Secret oluşturun;
-   değerine aynı adlı `.txt` dosyasının tamamını yapıştırın.
-4. İkinci Secret'ı `ANDROID_KEYSTORE_PASSWORD` adıyla oluşturun; değerine aynı
-   adlı `.txt` dosyasının tek satırını yapıştırın.
-5. Actions iş akışını çalıştırın. Eksik veya yanlış Secret varsa derleme açık bir
-   hata vererek durur; rastgele başka bir anahtarla APK üretmez.
+**Settings → Secrets and variables → Actions** bölümündeki şu iki Secret'a
+dokunmayın:
 
-Bu iki Secret'ı sonraki sürümlerde değiştirmeyin. Başka bir GitHub deposuna
-geçerseniz aynı iki değeri yeni deponun Secrets alanına da ekleyin. Özel imza
-paketini güvenli bir yerde saklayın; kaybolursa kurulu uygulamanın üzerine yeni
-güncelleme imzalanamaz.
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
 
-V26.30 geçici imzalı olduğu için V26.31'e geçerken son kez kaldırma gerekir.
-V26.31 ve sonrasındaki sürümler doğrudan mevcut uygulamanın üzerine kurulur.
+Bu değerleri değiştirmek farklı bir imza üretir ve yeni APK'nın mevcut
+uygulamanın üzerine kurulmasını engeller. Özel anahtar dosyasını veya Secret
+değerlerini hiçbir zaman GitHub deposuna yüklemeyin.
+
+## V26.32 kurulumu
+
+V26.31 uygulamasını kaldırmayın. V26.32 APK'sını doğrudan üzerine kurun. Aynı
+imza ve paket kimliği sayesinde yanlışlar, ilerleme, kaydedilmiş cümleler,
+ayarlar ve API anahtarı korunur.
+
+## Yeni bir GitHub deposuna geçilirse
+
+Yalnız depo değiştirildiğinde, V26.31 için güvenle saklanan aynı iki Secret
+değeri yeni deponun Actions Secrets alanına kopyalanmalıdır. Yeni anahtar
+oluşturulmamalıdır. Kalıcı anahtar kaybolursa kurulu uygulamanın üzerine imzalı
+güncelleme üretilemez.

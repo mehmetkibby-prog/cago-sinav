@@ -1,0 +1,70 @@
+name: APK oluştur
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kaynakları al
+        uses: actions/checkout@v4
+
+      - name: Node.js 22 kur
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Java 21 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: NPM paketlerini kur
+        run: npm ci
+
+      - name: Kaynak ve içerik testlerini çalıştır
+        run: npm run test:quality
+
+      - name: Tam Android projesini hazırla
+        run: bash scripts/prepare-android.sh
+
+      - name: Gradle izni ver
+        run: chmod +x android/gradlew
+
+      - name: Sabit güncelleme imzasını hazırla
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "${ANDROID_KEYSTORE_BASE64}" ] || [ -z "${ANDROID_KEYSTORE_PASSWORD}" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 ve ANDROID_KEYSTORE_PASSWORD GitHub Secrets alanına eklenmelidir."
+            exit 1
+          fi
+          signing_dir="${RUNNER_TEMP}/muzik-sinavi-signing"
+          mkdir -p "${signing_dir}"
+          printf '%s' "${ANDROID_KEYSTORE_BASE64}" | base64 --decode > "${signing_dir}/update.jks"
+          keytool -list -keystore "${signing_dir}/update.jks" -storepass "${ANDROID_KEYSTORE_PASSWORD}" -alias muzik_sinavi_update >/dev/null
+
+      - name: Sabit imzalı güncelleme APK'sı oluştur
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/muzik-sinavi-signing/update.jks
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: muzik_sinavi_update
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: ./gradlew assembleDebug
+
+      - name: Güncelleme APK'sını adlandır
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Muzik-Sinavi-Android-V26.32-Guncelleme.apk
+
+      - name: APK dosyasını yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: Muzik-Sinavi-Android-V26.32-Guncelleme-APK
+          path: Muzik-Sinavi-Android-V26.32-Guncelleme.apk
+          if-no-files-found: error

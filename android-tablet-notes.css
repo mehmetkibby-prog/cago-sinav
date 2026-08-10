@@ -1,0 +1,243 @@
+/* V26.28 Android/tablet-only layer: safe AGS typography and sentence saving. */
+.selectable-study-text,
+.lesson-output,
+#topic-lesson-content,
+.ags-lesson-text{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  cursor:text;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+
+/* V26.32: 2026 kaynakları cevap verilene kadar nötr bir kilit kartında kalır. */
+.question-sources.source-locked{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.question-sources.source-locked small{display:block;line-height:1.45}
+
+/* V26.32: Android WebView tablet layout is deliberately single-column at the
+   structural level. Every child may shrink and every long label may wrap. */
+.ags-workbook-page,
+.ags-workbook-page *,
+#ags-workbook-body,
+#ags-workbook-body *{box-sizing:border-box}
+.ags-workbook-page,
+#ags-workbook-body,
+.ags-section-stack,
+.ags-subject-card,
+.ags-test-player,
+.ags-lesson-reader,
+.ags-page-viewer,
+.ags-search-results{min-width:0;max-width:100%}
+.ags-workbook-page{width:100%;overflow-x:hidden}
+.ags-workbook-hero,
+.ags-workbook-toolbar,
+.ags-subject-card,
+.ags-test-library-head,
+.ags-test-card,
+.ags-question-card,
+.ags-lesson-text,
+.ags-page-viewer>header,
+.ags-search-results>header{width:100%;min-width:0;overflow:hidden}
+.ags-workbook-hero h2,
+.ags-workbook-hero p,
+.ags-workbook-metrics b,
+.ags-workbook-metrics span,
+.ags-workbook-tabs button,
+.ags-subject-chips button,
+.ags-inline-back button,
+.ags-reader-switch button,
+.ags-test-library-actions button,
+.ags-test-nav button{white-space:normal;overflow-wrap:anywhere;line-height:1.3}
+.ags-workbook-metrics{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.ags-workbook-metrics article{min-width:0}
+.ags-progress-metric{grid-column:auto!important}
+.ags-workbook-toolbar{position:relative!important;top:auto!important}
+.ags-workbook-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ags-search{min-width:0;width:100%}
+.ags-search input{min-width:0;width:100%}
+.ags-subject-chips{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:8px;
+  overflow:visible!important;
+  padding:1px 0 0;
+}
+.ags-subject-chips button{
+  width:100%;
+  min-height:42px;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.25;
+}
+.ags-subject-card>header{
+  position:static!important;
+  inset:auto!important;
+  z-index:auto!important;
+  display:grid!important;
+  grid-template-columns:88px minmax(0,1fr)!important;
+  align-items:center!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  padding:17px!important;
+  border-bottom:1px solid #2d526d!important;
+  backdrop-filter:none!important;
+}
+.ags-subject-card>header img{width:88px;max-width:100%;height:auto}
+.ags-resource-grid{
+  position:static!important;
+  clear:both;
+  margin:0!important;
+}
+.ags-resource-grid,.ags-test-grid{grid-template-columns:1fr!important}
+.ags-resource-card{grid-template-columns:40px minmax(0,1fr)!important;width:100%;min-width:0;height:auto}
+.ags-resource-card{color:#edf7ff!important}
+.ags-resource-card b{color:#f4f9ff!important}
+.ags-test-library-head,
+.ags-test-player-head,
+.ags-page-viewer>header,
+.ags-search-results>header{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch!important}
+.ags-test-library-actions{display:grid!important;grid-template-columns:1fr!important;width:100%;min-width:0}
+.ags-inline-back,.ags-reader-switch,.ags-test-nav{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0}
+.ags-question-map{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+.ags-choice-list button{grid-template-columns:38px minmax(0,1fr)!important;width:100%;min-width:0}
+.ags-choice-list span{min-width:0;white-space:normal}
+.ags-page-controls{grid-template-columns:46px minmax(0,1fr) 46px!important}
+.ags-page-controls select{min-width:0;width:100%}
+.ags-page-strip{grid-template-columns:repeat(8,minmax(0,1fr))!important}
+.ags-page-frame{width:100%;max-width:100%;min-width:0}
+.ags-page-frame:not(.zoomed) img{width:100%;max-width:940px}
+
+/* All generated teaching text can be selected, not only the AGS reader. */
+#app .message.ai,
+#app .lesson-transcript,
+#app .result,
+#app .answer-feedback{
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  overflow-wrap:anywhere;
+}
+.selectable-study-text::selection,
+.lesson-output::selection,
+#topic-lesson-content::selection,
+.ags-lesson-text::selection{
+  color:#03131f;
+  background:#67e8f9;
+}
+.sentence-save-hint{
+  margin:10px 0 0!important;
+  padding:10px 12px;
+  border:1px dashed #3b718f;
+  border-radius:11px;
+  color:#b7cfdf!important;
+  background:#071a2a;
+  font-size:12px!important;
+  line-height:1.5!important;
+}
+.sentence-save-toolbar{
+  position:fixed;
+  z-index:60;
+  left:50%;
+  bottom:calc(92px + env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  align-items:center;
+  gap:10px;
+  width:min(760px,calc(100% - 28px));
+  padding:12px;
+  border:1px solid #22d3ee;
+  border-radius:18px;
+  background:#071725f5;
+  box-shadow:0 18px 55px #000c,0 0 0 3px #22d3ee22;
+  backdrop-filter:blur(18px);
+  transform:translateX(-50%);
+}
+.sentence-save-toolbar-copy{min-width:0}
+.sentence-save-toolbar-copy small{display:block;margin-bottom:4px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:1px}
+.sentence-save-toolbar-copy span{display:block;overflow:hidden;color:#dff7ff;font-size:12px;line-height:1.35;white-space:nowrap;text-overflow:ellipsis}
+.sentence-save-toolbar button{min-height:44px;margin:0;white-space:nowrap}
+.saved-sentences-feature{border-color:#22d3ee!important;background:linear-gradient(145deg,#124353,#17304a)!important}
+.saved-sentences-hero{border:1px solid #22d3ee;background:linear-gradient(135deg,#10475a,#18304d)}
+.saved-sentence-list{display:grid;gap:13px;margin-top:16px}
+.saved-sentence-card{padding:18px;border:1px solid #315b78;border-radius:18px;background:linear-gradient(145deg,#10263b,#0c1d31);box-shadow:0 8px 24px #0004}
+.saved-sentence-card small{display:block;color:#7dd3fc;font-size:11px;font-weight:700;line-height:1.45;overflow-wrap:anywhere}
+.saved-sentence-card blockquote{margin:12px 0 15px;padding:0 0 0 14px;border-left:4px solid #22d3ee;color:#eefaff;font-size:16px;line-height:1.68;white-space:pre-wrap;overflow-wrap:anywhere}
+.saved-sentence-card>div{display:flex;align-items:center;gap:10px}
+.saved-sentence-card>div button{min-height:42px}
+.saved-sentences-empty{margin-top:16px}
+
+/* The old header was flexing its small label, title and description into one row
+   at Samsung tablet widths. Keep them in a normal text flow on Android. */
+.ags-lesson-reader>header{display:block!important}
+.ags-lesson-reader>header>*{min-width:0;max-width:100%}
+.ags-lesson-reader>header h3,
+.ags-lesson-reader>header p,
+.ags-subject-card h3,
+.ags-subject-card p,
+.ags-resource-card b,
+.ags-resource-card em,
+.ags-test-card h3,
+.ags-test-card p,
+.ags-question-card h3,
+.ags-choice-list span{
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.ags-lesson-reader>header h3{font-size:clamp(19px,2.7vw,25px);line-height:1.35}
+.ags-lesson-reader>header p{line-height:1.62}
+.ags-lesson-text{font-size:16px}
+.ags-lesson-text h3{line-height:1.45}
+.ags-lesson-text p{line-height:1.82}
+.ags-lesson-text aside{line-height:1.72}
+.ags-resource-card>span:nth-child(2),.ags-subject-card>header>div{min-width:0}
+
+/* The AGS toolbar now parks below the app header instead of underneath it. */
+.ags-workbook-toolbar{top:82px}
+
+@media(min-width:601px) and (max-width:900px){
+  .ags-workbook-page{gap:15px}
+  .ags-workbook-hero{padding:21px}
+  .ags-resource-grid,.ags-test-grid{grid-template-columns:1fr}
+  .ags-resource-card{min-height:0;padding:16px}
+  .ags-test-player-head,.ags-page-viewer>header,.ags-search-results>header{align-items:stretch;flex-direction:column}
+  .ags-question-map{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .ags-page-strip{grid-template-columns:repeat(8,minmax(0,1fr))}
+  .ags-subject-card>header{gap:16px!important;padding:18px!important}
+}
+
+@media(min-width:901px){
+  .ags-workbook-page{max-width:1100px;margin-inline:auto}
+}
+
+@media(max-width:600px){
+  .ags-workbook-toolbar{top:calc(68px + env(safe-area-inset-top))}
+  .sentence-save-toolbar{
+    bottom:calc(76px + env(safe-area-inset-bottom));
+    grid-template-columns:1fr auto;
+    gap:8px;
+    width:calc(100% - 20px);
+    padding:10px;
+    border-radius:15px;
+  }
+  .sentence-save-toolbar-copy{grid-column:1/-1}
+  .sentence-save-toolbar button{width:100%;padding:10px 12px}
+  .saved-sentence-card{padding:15px}
+  .saved-sentence-card>div{display:grid;grid-template-columns:1fr 1fr}
+  .ags-workbook-tabs{grid-template-columns:1fr}
+  .ags-workbook-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .ags-subject-card>header{grid-template-columns:70px minmax(0,1fr)!important}
+  .ags-subject-card>header img{width:70px}
+  .ags-subject-chips{grid-template-columns:1fr 1fr}
+  .ags-subject-chips button:first-child{grid-column:1/-1}
+  .ags-question-map,.ags-page-strip{grid-template-columns:repeat(6,minmax(0,1fr))!important}
+}
+
+@media(max-height:620px) and (orientation:landscape){
+  .sentence-save-toolbar{bottom:66px}
+}

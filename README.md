@@ -1,91 +1,84 @@
-# Müzik Sınavı Android V26.31 — Kalıcı AGS Tablet Düzeni
+# Müzik Sınavı Android V26.32 — Eğitim Bilimleri Kütüphanesi
 
-Bu paket yeni ve boş bir GitHub deposuna doğrudan yüklenmek için hazırlanmıştır.
-Uygulamanın web kaynakları, soru bankaları, AGS kitabı, otomatik APK iş akışı
-ve Android'e özel PDF/TTS kodları birlikte bulunur.
+V26.32, V26.31'in bütün özelliklerini ve yerel verilerini koruyarak ana ekranı
+dört anlaşılır çalışma merkezinde toplar. Gönderilen Eğitim Bilimleri özetleri,
+yalnız bu özetlere dayanan AI testi ve 208 sayfalık KPSS Eğitim Bilimleri test
+kitabı uygulamaya çevrimdışı okunabilir biçimde eklenmiştir.
 
-## Pakette bulunan ana parçalar
+## V26.32 yenilikleri
 
-- `www`: uygulamanın bütün ekranları, ana kodu ve soru bankaları
-- `www/ags-workbook-pages`: PDF'nin 40/40 orijinal sayfası
-- `native-android`: PDF kaydetme, Türkçe TTS, mikrofon izinleri ve Android ana
-  etkinliği
-- `scripts/prepare-android.sh`: yerel Android projesini üretip özel kodları
-  otomatik yerleştirir
-- `.github/workflows/main.yml`: GitHub üzerinde APK oluşturur
-- `tests`: 2026 motorunu, AGS bütünlüğünü ve yerel Android kodlarını denetler
-- `package.json`, `package-lock.json`, `capacitor.config.json`: bağımlılık ve
-  proje yapılandırması
+- **Müzik ve Sınavlar:** 2026 Gerçek Sınav, 2025 Müzik Sınavı, denemeler ve
+  mevcut müzik çalışma araçları
+- **Eğitim Bilimleri:** altı ders özeti, özetlere dayalı AI testi, KPSS Eğitim
+  Bilimleri test kitabı ve mevcut Eğitim Bilimleri soru alanları
+- **AI ve Çalışma Araçları:** AI konu anlatımı, AI testleri, AGS ve diğer çalışma
+  araçları
+- **Kayıtlar ve Gelişim:** yanlışlar, ilerleme, kaydedilmiş cümleler ve ayarlar
 
-## V26.28 — Android tablet düzeltmeleri
+Ana ekranda yalnız bu dört merkez görünür; mevcut özellikler ilgili merkezin
+içinde korunur. Düzen hem tablet portre hem de yatay kullanım için uyarlanmıştır.
 
-- AGS konu anlatımı başlığında tablet genişliğinde birbirine giren yazılar düzeltildi
-- AGS araç çubuğunun üst uygulama başlığıyla çakışması önlendi
-- Tablet portre görünümünde AGS kartları tek sütunda ve taşmadan açılır
-- AGS ve AI konu anlatımlarında metne basılı tutup seçerek cümle kaydetme geri eklendi
-- Kayıtları saklayan ayrı **Kaydettiğim Cümleler** bölümü eklendi
-- Cümle kopyalama, tek kayıt silme ve tüm kayıtları temizleme eklendi
+## Eğitim Bilimleri özetleri
 
-## V26.30 — 2026 Gerçek Sınav kaynakları
+1. Program Geliştirme
+2. Gelişim Psikolojisi
+3. Öğrenme Psikolojisi
+4. Öğretim Yöntem ve Teknikleri
+5. Rehberlik
+6. Ölçme ve Değerlendirme
 
-- Her yeni 2026 sorusu için 2–4 doğrudan kaynak bağlantısı zorunludur
-- En az iki bağımsız alan adı ve en az bir resmî/akademik/kurumsal kaynak aranır
-- MEB, üniversite/konservatuvar, akademik yayın ve güvenilir müzik ansiklopedileri önceliklidir
-- Blog, forum, sosyal medya, satış ve test siteleri bilgi kaynağı olarak reddedilir
-- Kaynaklar cevabı ele vermemesi için cevap verilene kadar kilitlidir
-- Yazdırılabilir PDF'nin cevap ve açıklama bölümünde soru kaynakları bulunur
+Toplam 8 özgün özet sayfası hem görsel aslıyla hem seçilebilir metin görünümüyle
+okunabilir. Metin görünümündeki cümleler mevcut **Cümleyi Kaydet** sistemiyle
+kaydedilebilir.
 
-## V26.31 — AGS tablet düzeninin kök düzeltmesi
+## Özetlere dayalı AI testi
 
-- Ana uygulama başlığının genel `header` kuralı yalnız gerçek üst başlığa
-  kapsamlandı; AGS iç bölüm başlıklarına sızması engellendi
-- AGS bölüm kapakları artık sabit 82 piksel yüksekliğe zorlanmaz ve içeriği kadar
-  doğal yükseklik kaplar
-- İlk konu/test kartının bölüm kapağının üzerine çıkması engellendi
-- Konu filtreleri yatayda kesilmek yerine tablet genişliğine göre çok satırlı
-  ızgaraya dönüşür
-- V26.30 kaynak sistemi, cümle kaydetme, PDF/TTS ve bütün soru bankaları korundu
+- Altı dersten biri seçilebilir.
+- 5, 10, 15 veya 20 soru ve kolay, orta veya zor seviye seçilebilir.
+- Sorular yalnız seçilen özetin uygulamadaki tam metnine göre üretilir; web
+  bilgisi kullanılmaz.
+- Her sorunun özette geçen bir dayanak ifadesi bulunmalıdır. Dayanağı özette
+  doğrulanamayan soru teste alınmaz.
+- Dört seçenek, doğru cevap, açıklama ve kaynak özeti birlikte gösterilir.
 
-## V26.31 — Verileri koruyan GitHub güncelleme sistemi
+## KPSS Eğitim Bilimleri test kitabı
 
-- GitHub Actions her derlemede rastgele debug anahtarı üretmek yerine GitHub
-  Secrets içindeki aynı kalıcı Android anahtarını kullanır
-- Paket kimliği değişmez: `com.caglar.muziksinavi`
-- V26.31'den sonraki APK'lar mevcut uygulamanın üzerine güncelleme olarak kurulur
-- Yanlışlar, ilerleme, kayıtlı cümleler, ayarlar ve API anahtarı uygulama verisiyle
-  birlikte korunur
-- Özel anahtar kaynak paketine veya GitHub deposuna eklenmez
-- V26.30'un eski geçici anahtarı bulunmadığından V26.31 geçişinde son kez kaldırıp
-  kurmak gerekir; sonraki sürümlerde gerekmez
+Gönderilen `KPSS-EĞİTİM-BİLİMLERİ.pdf` dosyasının 208/208 sayfası çevrimdışı
+kitap okuyucuya eklenmiştir. Önceki/sonraki sayfa, sayfaya gitme, yakınlaştırma
+ve kaldığın sayfadan devam özellikleri vardır. Okuyucu yalnız açık sayfayı
+yükleyerek tablet belleğini korur.
 
-## Korunan AGS Eğitim Bilimleri Kitabı
+## Korunan özellikler
 
-- 40 orijinal sayfa
-- 12 konu anlatımı
-- 12 test
-- 81 soru, beş seçenek ve 81 resmî çözüm
-- Arama, alan filtresi, ilerleme kaydı ve kaldığın yerden devam
-- Yanlış cevapları Eğitim Bilimleri yanlışlarına kaydetme
+- 2026 Gerçek Sınav kaynak sistemi ve 2025 Müzik Sınavı
+- 40 sayfalık AGS kitabı, 12 konu, 12 test, 81 soru ve resmî çözümleri
+- Mevcut müzik ve Eğitim Bilimleri soru bankaları
+- Yanlışlar, ilerleme, kayıtlı cümleler, ayarlar ve API anahtarı
+- Android PDF kaydetme, Türkçe yerel TTS ve mikrofon izinleri
+- Paket kimliği `com.caglar.muziksinavi`
+- GitHub Secrets içindeki V26.31 kalıcı Android güncelleme imzası
 
-## Korunan Android özellikleri
+## V26.31'den güncelleme
 
-- PDF'nin boş veya 0 KB kaydedilmesini önleyen yerel PDF kaydetme kodu
-- Türkçe cihaz sesini kullanan yerel TTS kodu
-- Mikrofon izni ve ses ayarları
-- `com.caglar.muziksinavi` paket kimliği
-- V26.31 sürüm kodu
-- Samsung tablet görünümü ve mevcut soru bankaları
-- GitHub Secrets ile sabit Android güncelleme imzası
+V26.32 aynı paket kimliğini ve V26.31'de kurulan sabit imzayı kullanır. Eski
+uygulamayı kaldırmayın; V26.32 APK'sını doğrudan üzerine kurun. Böylece yanlışlar,
+ilerleme, kayıtlı cümleler, ayarlar ve API anahtarı korunur. GitHub Secrets
+değerlerini değiştirmeyin.
 
-## GitHub ile APK oluşturma
+GitHub web yükleme sınırı nedeniyle güncelleme dört ZIP'e ayrılmıştır. Ayrıntılı
+sıra için `V26.32-GUNCELLEME-TALIMATI.md` dosyasını okuyun. Dört bölümün içeriği
+depoya yüklendikten sonra **Actions → APK oluştur → Run workflow** yalnız bir
+kez çalıştırılır.
 
-Ayrıntılar için `GITHUB-YUKLEME-ADIMLARI.md` dosyasını okuyun. Kısaca:
+## Kaynak yapısı
 
-1. Bu klasörün içindeki her şeyi yeni deponun ana dizinine yükleyin.
-2. `.github` klasörünün yüklendiğini doğrulayın.
-3. Özel sabit imza paketindeki iki değeri GitHub Actions Secrets alanına bir kez ekleyin.
-4. **Actions → APK oluştur → Run workflow** seçeneğini çalıştırın.
-5. `Muzik-Sinavi-Android-V26.31-Guncelleme-APK` çıktısını indirin.
+- `www`: uygulama ekranları, soru bankaları ve yeni menü
+- `www/education-library`: altı özet, 208 kitap sayfası ve içerik manifesti
+- `www/ags-workbook-pages`: AGS kitabının 40/40 sayfası
+- `native-android`: PDF, TTS, mikrofon ve Android ana etkinlik kaynakları
+- `scripts/prepare-android.sh`: Android projesini üretip özel kodları yerleştirir
+- `.github/workflows/main.yml`: elle başlatılan sabit imzalı APK iş akışı
+- `tests`: içerik, menü, imza, sürüm ve Android kaynak denetimleri
 
 ## Yerel derleme
 
@@ -97,7 +90,4 @@ npm run build:apk
 ```
 
 APK `android/app/build/outputs/apk/debug/app-debug.apk` konumunda oluşur.
-
-> `android` ve `node_modules` klasörleri üretilen klasörlerdir; GitHub'a
-> yüklenmez. Uygulamaya özel Android ana kodları `native-android` altında
-> kaynak olarak korunur.
+`android` ve `node_modules` üretilen klasörlerdir; GitHub'a yüklenmez.

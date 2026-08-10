@@ -1,6 +1,6 @@
 {
   "name": "muzik-sinavi",
-  "version": "26.31.0",
+  "version": "26.32.0",
   "private": true,
   "scripts": {
     "android:add": "npx cap add android",
@@ -9,7 +9,7 @@
     "android:open": "npx cap open android",
     "build:apk": "cd android && ./gradlew assembleDebug",
     "test:native": "node tests/android-native-template.test.js",
-    "test:quality": "node tests/real2026-quality.test.js && node tests/real2026-integration.test.js && node tests/real2026-resilience.test.js && node tests/real2026-sources.test.js && node tests/ags-workbook-integrity.test.js && node tests/android-tablet-notes.test.js && node tests/android-ags-layout.test.js && node tests/android-update-signing.test.js && node tests/android-v26-31-regression.test.js && node tests/android-native-template.test.js",
+    "test:quality": "node tests/real2026-quality.test.js && node tests/real2026-integration.test.js && node tests/real2026-resilience.test.js && node tests/real2026-sources.test.js && node tests/ags-workbook-integrity.test.js && node tests/android-tablet-notes.test.js && node tests/android-ags-layout.test.js && node tests/android-update-signing.test.js && node tests/android-v26-32-regression.test.js && node tests/education-library-v26-32.test.js && node tests/android-native-template.test.js",
     "ios:sync": "npx cap sync ios",
     "ios:open": "npx cap open ios"
   },

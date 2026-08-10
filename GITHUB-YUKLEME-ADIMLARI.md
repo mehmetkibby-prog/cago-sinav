@@ -1,48 +1,39 @@
-# Yeni ve Boş GitHub Deposuna Yükleme
+# GitHub Yükleme ve APK Oluşturma
 
-Bu paket, daha önce hiçbir dosya bulunmayan yeni bir GitHub deposuna yüklenmek
-üzere hazırlanmış tam V26.31 Android kaynak paketidir.
+## Mevcut V26.31 deposunu güncelleme
 
-## Yükleme
+V26.32 için teslim edilen dört güncelleme ZIP'ini aşağıdaki sırayla açıp
+içeriklerini mevcut deponun ana dizinine yükleyin:
 
-1. ZIP dosyasını açın.
-2. Açılan klasörün **içindeki** bütün dosya ve klasörleri yeni GitHub deposunun
-   ana dizinine yükleyin.
-3. `.github`, `native-android`, `scripts`, `tests` ve `www` klasörlerinin
-   depoda göründüğünü kontrol edin.
-4. macOS'ta `.github` görünmüyorsa Finder'da `Command + Shift + .` tuşlarına
-   basın.
-5. Ayrı verilen **GitHub Sabit İmza Kurulumu** paketindeki iki değeri
-   `ANDROID_KEYSTORE_BASE64` ve `ANDROID_KEYSTORE_PASSWORD` adlarıyla
-   **Settings → Secrets and variables → Actions** bölümüne bir kez ekleyin.
-6. GitHub'da **Actions → APK oluştur → Run workflow** yolunu izleyin.
-7. İşlem tamamlanınca **Muzik-Sinavi-Android-V26.31-Guncelleme-APK** çıktısını
-   indirin ve içindeki `Muzik-Sinavi-Android-V26.31-Guncelleme.apk` dosyasını
-   tablete kurun.
+1. Ana kod, menü, özetler ve yapılandırma
+2. KPSS kitap sayfaları 001–070
+3. KPSS kitap sayfaları 071–140
+4. KPSS kitap sayfaları 141–208
 
-Sabit imza paketini veya içindeki anahtar/değerleri GitHub deposuna yüklemeyin.
-Bu iki Secret sonraki sürümlerde değiştirilmez; böylece yeni APK eski sürümün
-üzerine güncelleme olarak kurulur ve uygulama verileri korunur.
+Her parçanın içindeki `www` gibi klasörler depo kökündeki aynı adlı klasörle
+birleşmelidir. Ek bir üst klasör oluşturmamalıdır. Dört bölüm tamamlanınca
+**Actions → APK oluştur → Run workflow** yolunu izleyin.
 
-V26.30 geçici bir GitHub imzasıyla üretildiği için V26.31'e geçerken son kez
-eski uygulamayı kaldırmak gerekir. V26.31 ve sonraki sürümlerde kaldırma gerekmez.
+İş akışı, içerik testleri geçmeden APK üretmez. Başarılı çalışmanın çıktısı
+`Muzik-Sinavi-Android-V26.32-Guncelleme-APK` adındadır.
 
-## Neden depoda `android` klasörü yok?
+## Kalıcı imza
 
-`android` klasörü derleme çıktısıdır ve içindeki 40 AGS sayfası `www` içeriğinin
-ikinci kopyası olduğu için GitHub web yüklemesindeki dosya sayısını gereksiz
-artırır. Actions bu klasörü otomatik oluşturur. Ardından `native-android`
-klasöründeki uygulamaya özel ana Android dosyalarını yerlerine koyar:
+V26.31 için daha önce eklenen şu iki GitHub Actions Secret aynen korunmalıdır:
 
-- PDF kaydetme eklentisi
-- Türkçe yerel sesli okuma (TTS) eklentisi
-- Mikrofon izinleri
-- Uygulama sürümü ve paket kimliği
-- GitHub Secrets üzerinden kalıcı güncelleme imzası
-- Ana Android etkinliği
+- `ANDROID_KEYSTORE_BASE64`
+- `ANDROID_KEYSTORE_PASSWORD`
 
-Bu nedenle `android` klasörünün depoda olmaması özellik eksikliği oluşturmaz;
-özel kodlar görünür biçimde `native-android` altında saklanır ve her derlemede
-test edilir.
+Değerleri yeniden üretmeyin veya değiştirmeyin. Özel anahtar dosyasını ya da
+Secret değerlerini depoya yüklemeyin.
 
-`node_modules` ve sonradan oluşan `android` klasörünü GitHub'a yüklemeyin.
+## Kurulum
+
+V26.31'i kaldırmadan V26.32 APK'sını üzerine kurun. Bu, uygulamadaki yerel
+verileri korur. Paket kimliği `com.caglar.muziksinavi` olarak değişmeden kalır.
+
+## Üretilen klasörler
+
+`android` ve `node_modules` klasörleri GitHub'a yüklenmez. Actions bunları
+derleme sırasında üretir; özel Android kaynakları `native-android` altında
+saklanır.

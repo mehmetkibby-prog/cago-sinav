@@ -12,7 +12,7 @@ const mustContain = (relative, fragments) => {
 };
 
 const index = mustContain("www/index.html", [
-  "V26.30 · Android Tablet",
+  "V26.31 · Android Tablet",
   "android-tablet-notes.css",
   "android-study-notes.js",
 ]);
@@ -37,7 +37,7 @@ const app = mustContain("www/app.js", [
   '"saved-sentences":renderSavedSentences',
   "selectable-study-text",
   "sentence-save-hint",
-  "V26.30 · Android Tablet",
+  "V26.31 · Android Tablet",
 ]);
 new vm.Script(app, { filename: "app.js" });
 
@@ -54,6 +54,10 @@ mustContain("www/android-tablet-notes.css", [
   ".ags-workbook-toolbar{position:relative!important;top:auto!important}",
   "@media(min-width:601px) and (max-width:900px)",
   ".ags-resource-grid,.ags-test-grid{grid-template-columns:1fr}",
+  ".ags-subject-card>header{",
+  "height:auto!important",
+  "position:static!important",
+  "grid-template-columns:repeat(auto-fit,minmax(180px,1fr))",
   ".sentence-save-toolbar",
   "-webkit-user-select:text!important",
 ]);

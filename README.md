@@ -1,4 +1,4 @@
-# Müzik Sınavı Android V26.28 — Tablet Düzeltmeli Tam Kaynak
+# Müzik Sınavı Android V26.31 — Kalıcı AGS Tablet Düzeni
 
 Bu paket yeni ve boş bir GitHub deposuna doğrudan yüklenmek için hazırlanmıştır.
 Uygulamanın web kaynakları, soru bankaları, AGS kitabı, otomatik APK iş akışı
@@ -26,6 +26,38 @@ ve Android'e özel PDF/TTS kodları birlikte bulunur.
 - Kayıtları saklayan ayrı **Kaydettiğim Cümleler** bölümü eklendi
 - Cümle kopyalama, tek kayıt silme ve tüm kayıtları temizleme eklendi
 
+## V26.30 — 2026 Gerçek Sınav kaynakları
+
+- Her yeni 2026 sorusu için 2–4 doğrudan kaynak bağlantısı zorunludur
+- En az iki bağımsız alan adı ve en az bir resmî/akademik/kurumsal kaynak aranır
+- MEB, üniversite/konservatuvar, akademik yayın ve güvenilir müzik ansiklopedileri önceliklidir
+- Blog, forum, sosyal medya, satış ve test siteleri bilgi kaynağı olarak reddedilir
+- Kaynaklar cevabı ele vermemesi için cevap verilene kadar kilitlidir
+- Yazdırılabilir PDF'nin cevap ve açıklama bölümünde soru kaynakları bulunur
+
+## V26.31 — AGS tablet düzeninin kök düzeltmesi
+
+- Ana uygulama başlığının genel `header` kuralı yalnız gerçek üst başlığa
+  kapsamlandı; AGS iç bölüm başlıklarına sızması engellendi
+- AGS bölüm kapakları artık sabit 82 piksel yüksekliğe zorlanmaz ve içeriği kadar
+  doğal yükseklik kaplar
+- İlk konu/test kartının bölüm kapağının üzerine çıkması engellendi
+- Konu filtreleri yatayda kesilmek yerine tablet genişliğine göre çok satırlı
+  ızgaraya dönüşür
+- V26.30 kaynak sistemi, cümle kaydetme, PDF/TTS ve bütün soru bankaları korundu
+
+## V26.31 — Verileri koruyan GitHub güncelleme sistemi
+
+- GitHub Actions her derlemede rastgele debug anahtarı üretmek yerine GitHub
+  Secrets içindeki aynı kalıcı Android anahtarını kullanır
+- Paket kimliği değişmez: `com.caglar.muziksinavi`
+- V26.31'den sonraki APK'lar mevcut uygulamanın üzerine güncelleme olarak kurulur
+- Yanlışlar, ilerleme, kayıtlı cümleler, ayarlar ve API anahtarı uygulama verisiyle
+  birlikte korunur
+- Özel anahtar kaynak paketine veya GitHub deposuna eklenmez
+- V26.30'un eski geçici anahtarı bulunmadığından V26.31 geçişinde son kez kaldırıp
+  kurmak gerekir; sonraki sürümlerde gerekmez
+
 ## Korunan AGS Eğitim Bilimleri Kitabı
 
 - 40 orijinal sayfa
@@ -41,8 +73,9 @@ ve Android'e özel PDF/TTS kodları birlikte bulunur.
 - Türkçe cihaz sesini kullanan yerel TTS kodu
 - Mikrofon izni ve ses ayarları
 - `com.caglar.muziksinavi` paket kimliği
-- V26.28 sürüm kodu
+- V26.31 sürüm kodu
 - Samsung tablet görünümü ve mevcut soru bankaları
+- GitHub Secrets ile sabit Android güncelleme imzası
 
 ## GitHub ile APK oluşturma
 
@@ -50,8 +83,9 @@ Ayrıntılar için `GITHUB-YUKLEME-ADIMLARI.md` dosyasını okuyun. Kısaca:
 
 1. Bu klasörün içindeki her şeyi yeni deponun ana dizinine yükleyin.
 2. `.github` klasörünün yüklendiğini doğrulayın.
-3. **Actions → APK oluştur → Run workflow** seçeneğini çalıştırın.
-4. `Muzik-Sinavi-Android-V26.28-Tablet-Duzeltmeli-APK` çıktısını indirin.
+3. Özel sabit imza paketindeki iki değeri GitHub Actions Secrets alanına bir kez ekleyin.
+4. **Actions → APK oluştur → Run workflow** seçeneğini çalıştırın.
+5. `Muzik-Sinavi-Android-V26.31-Guncelleme-APK` çıktısını indirin.
 
 ## Yerel derleme
 

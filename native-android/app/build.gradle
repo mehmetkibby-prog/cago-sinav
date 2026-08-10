@@ -1,5 +1,11 @@
 apply plugin: 'com.android.application'
 
+def updateKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
+def updateKeystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+def updateKeyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "muzik_sinavi_update"
+def updateKeyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: updateKeystorePassword
+def stableUpdateSigningReady = updateKeystorePath && updateKeystorePassword
+
 android {
     namespace = "com.caglar.muziksinavi"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -8,15 +14,31 @@ android {
         applicationId "com.caglar.muziksinavi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2630
-        versionName "26.30"
+        versionCode 2631
+        versionName "26.31"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
 
+    signingConfigs {
+        stableUpdate {
+            if (stableUpdateSigningReady) {
+                storeFile file(updateKeystorePath)
+                storePassword updateKeystorePassword
+                keyAlias updateKeyAlias
+                keyPassword updateKeyPassword
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            if (stableUpdateSigningReady) {
+                signingConfig signingConfigs.stableUpdate
+            }
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
